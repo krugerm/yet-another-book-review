@@ -1,26 +1,39 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
-import Avatar from "./Avatar";
+import Avatar from "./components/Avatar";
 import PropTypes from 'prop-types';
+import React from "react";
+import { Session } from "@supabase/supabase-js";
 
-Account.propTypes = {
-  session: PropTypes.shape({
-    user: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      email: PropTypes.string,
-      // Add other user properties if needed
-    }).isRequired,
-  }).isRequired,
-};
+// AccountPage.propTypes = {
+//   session: PropTypes.shape({
+//     user: PropTypes.shape({
+//       id: PropTypes.string.isRequired,
+//       email: PropTypes.string,
+//       // Add other user properties if needed
+//     }).isRequired,
+//   }).isRequired,
+// };
 
-export default function Account({ session }) {
+export const AccountPage = () => {
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fullname, setFullName] = useState(null);
   const [username, setUsername] = useState(null);
   const [website, setWebsite] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
 
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+
     let ignore = false;
     async function getProfile() {
       setLoading(true);
@@ -28,7 +41,7 @@ export default function Account({ session }) {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select(`username, website, avatar_url`)
+        .select(`full_name, username, website, avatar_url`)
         .eq("id", user.id)
         .single();
 
@@ -77,7 +90,7 @@ export default function Account({ session }) {
   }
 
   return (
-    <form onSubmit={updateProfile} className="form-widget">
+    <form onSubmit={(event) => updateProfile(event, avatar_url)} className="form-widget">
       <Avatar
         url={avatar_url}
         size={150}
@@ -131,3 +144,5 @@ export default function Account({ session }) {
     </form>
   );
 }
+
+export default AccountPage;
