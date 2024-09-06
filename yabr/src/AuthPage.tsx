@@ -3,10 +3,12 @@ import { supabase } from "./supabaseClient";
 import React from "react";
 import { YabrHeader } from "./components/YabrHeader";
 import { YabrFooter } from "./components/YabrFooter";
+import { useAlert } from './AlertContext';
 
 export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const { showAlert } = useAlert();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -15,9 +17,10 @@ export default function AuthPage() {
     const { error } = await supabase.auth.signInWithOtp({ email });
 
     if (error) {
-      alert(error.message);
+      showAlert(error.message, "error");
     } else {
-      alert("Check your email for the login link!");
+
+      showAlert("Check your email for the login link!", "success");
     }
     setLoading(false);
   };

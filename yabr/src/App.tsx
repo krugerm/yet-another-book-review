@@ -16,29 +16,32 @@ import ForgotPasswordPage from "./ForgotPasswordPage";
 import TermsAndConditionsPage from "./TermsAndConditionsPage";
 import { UserProvider } from "./UserContext";
 import CreateBookReviewPage from "./CreateBookReviewPage";
+import { AlertProvider } from './AlertContext';
 
 const App: React.FC = () => {
   return (
-    <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/search/:initSearchTerm?" element={<SearchPage />} />
-          <Route path="/book/:id" element={<BookDetailsPage />} />
-          <Route path="/create-book-review" element={<CreateBookReviewPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="/login/:next?" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/resetPassword" element={<ResetPasswordPage />} />
-          <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/terms" element={<TermsAndConditionsPage />} />
-        </Routes>
-      </Router>
-    </UserProvider>
+    <AlertProvider>
+      <UserProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/search/:initSearchTerm?" element={<SearchPage />} />
+            <Route path="/book/:id" element={<BookDetailsPage />} />
+            <Route path="/create-book-review" element={<CreateBookReviewPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/login/:next?" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/resetPassword" element={<ResetPasswordPage />} />
+            <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/terms" element={<TermsAndConditionsPage />} />
+          </Routes>
+        </Router>
+      </UserProvider>
+    </AlertProvider>
   );
 };
 

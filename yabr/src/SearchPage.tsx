@@ -52,9 +52,6 @@ const SearchPage: React.FC = () => {
       setLoading(true);
       var s = searchTerm;
       
-      // console.log('searching for books with searchTerm = ', s);
-      // alert('searching for books with searchTerm = ' + s);
-
       var results;
       if (s && s.length > 0) {
         results = await supabase.from<IBookWithRatings>('books_with_ratings')
@@ -75,7 +72,6 @@ const SearchPage: React.FC = () => {
           .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
       }
 
-      // alert('results = ' + JSON.stringify(results));
       const { data, error, count } = results;
 
       if (results == null) {

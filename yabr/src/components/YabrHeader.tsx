@@ -92,7 +92,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                   img={userProfile.avatar_url}
                   rounded
                 /> :
-                <HiUserCircle size={24} />
+                <HiUserCircle size={32} />
               }
             >
               <p>{userProfile.avatar_url ?? "testing"}</p>

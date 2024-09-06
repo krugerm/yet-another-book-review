@@ -18,6 +18,7 @@ import { ProgressSteps } from './components/ProgressSteps';
 import { HiDocumentText, HiHome, HiSave, HiSearch, HiUpload } from 'react-icons/hi';
 
 import { v4 as uuidv4 } from 'uuid';
+import { useAlert } from './AlertContext';
 
 
 const CreateBookReviewPage = () => {
@@ -35,6 +36,7 @@ const CreateBookReviewPage = () => {
   const { userProfile } = userContext!;
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     if (!userProfile) {
@@ -99,11 +101,11 @@ const CreateBookReviewPage = () => {
 
   const handleReviewSubmit = async (rating: number, content: string) => {
     if (!userProfile) {
-      alert(t('You must be logged in to submit a review'));
+      showAlert(t('You must be logged in to submit a review'), 'error');
       return;
     }
     if (!selectedBook) {
-      alert(t('You must select a book to review'));
+      showAlert(t('You must select a book to review'), 'error');
       return;
     }
 
@@ -132,7 +134,8 @@ const CreateBookReviewPage = () => {
         // console.log("inserted book", data);
 
         if (error) {
-          console.log("Error inserting book: ", error);
+          showAlert(t('Error inserting book') + error, 'error');
+          // console.log("Error inserting book: ", error);
           throw error;
         }
         if (!data) {
@@ -163,17 +166,18 @@ const CreateBookReviewPage = () => {
         .single();
 
       if (error) {
-        console.error('Error creating review:', error);
+        showAlert(t('Error creating review') + error, 'error');
+        // console.error('Error creating review:', error);
         return null;
       }
 
-      alert(t('Review submitted successfully!'));
+      showAlert(t('Review submitted successfully!'), 'success');
 
       // navigate to the book detail page to see your review
       navigate('/book/' + bookId);
     } catch (error) {
       console.error('Error submitting review:', error);
-      alert(t('An error occurred while submitting your review. Please try again.'));
+      showAlert(t('An error occurred while submitting your review. Please try again.'), 'error');
     }
   };
 
