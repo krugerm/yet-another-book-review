@@ -57,9 +57,10 @@ const SearchPage: React.FC = () => {
         results = await supabase.from<IBookWithRatings>('books_with_ratings')
           .select('*', { count: 'exact' })
           .textSearch('title, description, authors, isbn', s)
+          .order('last_reviewed', { ascending: false })
           // .neq('thumbnail', null)
-          .order('created_at', { ascending: false })
-          .order('title', { ascending: false })
+          // .order('created_at', { ascending: false })
+          // .order('title', { ascending: false })
           .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
       }
       else {
@@ -67,8 +68,9 @@ const SearchPage: React.FC = () => {
           .from<IBookWithRatings>('books_with_ratings')
           .select('*', { count: 'exact' })
           // .neq('thumbnail', null)
-          .order('created_at', { ascending: false })
-          .order('title', { ascending: false })
+          .order('last_reviewed', { ascending: false })
+          // .order('created_at', { ascending: false })
+          // .order('title', { ascending: false })
           .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
       }
 
@@ -163,7 +165,7 @@ const SearchPage: React.FC = () => {
               <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                   {searchResults.map((book) => (
-                    <BookCard key={book.id} book={book} />
+                    <BookCard key={book.google_books_id} book={book} />
                   ))}
                 </div>
                 {(Math.ceil(nResults / pageSize) > 1) && (

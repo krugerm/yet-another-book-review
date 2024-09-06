@@ -34,11 +34,13 @@ const HomePage = () => {
       const { data: allBooks } = await supabase
         .from<IBookWithRatings>('books_with_ratings')
         .select('*')
-        .neq('thumbnail', null)
+        // .neq('thumbnail', null)
         .order('last_reviewed', { ascending: false })
         //.order('created_at', { ascending: false })
-        .order('title', { ascending: false })
+        // .order('title', { ascending: false })
         .limit(12);
+
+      console.log('Fetched books:', allBooks);
 
       if (allBooks == null) {
         console.log("No books found in the database");
@@ -62,37 +64,19 @@ const HomePage = () => {
       <YabrHeader />
 
       {/* Hero Section */}
+  
       <section className="relative bg-gray-700 text-white py-20 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/src/assets/library.png')" }}>
+
         <div className="container mx-auto text-center">
-          <h2 className="text-3xl text-white font-bold mb-4">Discover Your Next Favorite Book</h2>
+          <h2 className="text-3xl text-white font-bold mb-4 shadow-lg bg-black/20 px-4 py-2 rounded-md">Discover Your Next Favorite Book</h2>
           <p className="mb-8">Join our community of book lovers and share your thoughts on the latest reads.</p>
+          
           <div className="flex justify-center">
-            <Button onClick={() => navigate('/register')} className="bg-pink-500 hover:bg-pink-600 text-white mx-6 py-2 px-12 rounded-full text-lg">JOIN THE YABR COMMUNITY</Button>
+            {/* <Button onClick={() => navigate('/register')} className="bg-pink-500 hover:bg-pink-600 text-white mx-6 py-2 px-12 rounded-full text-lg">JOIN THE YABR COMMUNITY</Button> */}
             <Button onClick={() => navigate('/create-book-review')} className="bg-pink-500 hover:bg-pink-600 text-white mx-6 py-2 px-12 rounded-full text-lg">POST A REVIEW</Button>
           </div>
         </div>
       </section>
-
-      {/* Top Rated Books */}
-      {/* <section className="py-12">
-        <div className="max-w-screen-xl mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-6">TOP RATED BOOKS</h2>
-          <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-            <Carousel>
-              {topRatedBooks.map((book) => (
-                <div key={book.id} className="flex h-full items-center justify-center bg-gray-400 dark:bg-gray-700 dark:text-white">
-                  <div className="flex flex-col items-center text-center px-4">
-                    <img src={book.thumbnail || '/src/assets/placeholder1.png'} alt={book.title} className="w-32 h-48 object-cover mb-4" />
-                    <h3 className="text-xl font-bold">{book.title}</h3>
-                    <p className="text-sm italic max-w-md">"{book.description?.substring(0, 100)}..."</p>
-                    <p className="text-blue-500 mt-2">- {book.authors?.[0]}</p>
-                  </div>
-                </div>
-              ))}
-            </Carousel>
-          </div>
-        </div>
-      </section> */}
 
       {/* Recent Books */}
       <section className="py-12 px-6">
@@ -126,7 +110,7 @@ const HomePage = () => {
             !loading && recentBooks.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                 {recentBooks.map((book) => (
-                  <BookCard key={book.id} book={book} />
+                  <BookCard key={book.google_books_id} book={book} />
                 ))}
               </div>
             )

@@ -50,7 +50,7 @@ export function BookSearch({ onSelectBook }) {
       {isLoading && <p>{t('Searching...')}</p>}
       <ul className="mt-4 space-y-4">
         {searchResults.map((book) => (
-          <li key={book.id} className="flex items-start space-x-4 p-2 border rounded" onClick={() => onSelectBook(book)}>
+          <li key={book.google_books_id} className="flex items-start space-x-4 p-2 border rounded" onClick={() => onSelectBook(book)}>
 
               <img
                 src={book.thumbnail || '/src/assets/placeholder1.png'}

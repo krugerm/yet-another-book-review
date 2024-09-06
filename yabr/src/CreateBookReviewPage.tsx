@@ -146,12 +146,10 @@ const CreateBookReviewPage = () => {
 
       // console.log("existingBook", existingBook);
 
-      let bookId;
       let googleBooksId;
       if (!existingBook) {
         // console.log("inserting book: ", selectedBook);
         
-        selectedBook.id = uuidv4();
         const { data, error } = await supabase
           .from<IBook>('books')
           .insert(selectedBook)
@@ -168,10 +166,8 @@ const CreateBookReviewPage = () => {
         if (!data) {
           throw new Error('Error inserting book');
         }
-        bookId = data.id;
         googleBooksId = data.google_books_id;
       } else {
-        bookId = existingBook.id;
         googleBooksId = existingBook.google_books_id;
       }
 
@@ -182,7 +178,7 @@ const CreateBookReviewPage = () => {
         rating: rating,
         review_text: content,
         user_id: userProfile.id,
-        book_id: bookId,
+        google_books_id: googleBooksId,
         created_at: new Date().toISOString(),
       };
 

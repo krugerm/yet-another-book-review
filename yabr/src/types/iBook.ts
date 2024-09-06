@@ -1,6 +1,5 @@
 export interface IBook {
-    id: string;
-    google_books_id: string | null;
+    google_books_id: string;
     etag: string | null;
     self_link: string | null;
     title: string;

@@ -10,6 +10,8 @@ import { supabase } from './supabaseClient';
 import DOMPurify from 'dompurify';
 import { useAlert } from './AlertContext';
 import { useUserContext } from './UserContext';
+import { addAiGeneratedReviews } from './utils/generateAiReviews';
+import { IoSparklesSharp } from "react-icons/io5";
 
 const BookDetailsPage: React.FC = () => {
   const { google_books_id } = useParams<{ google_books_id: string }>();
@@ -19,6 +21,7 @@ const BookDetailsPage: React.FC = () => {
   const [reviews, setReviews] = useState<IBookReviewWithProfile[]>([]);
   const [topRated, setTopRated] = useState<IBookWithRatings[]>([]);
   const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
   const [sortType, setSortType] = useState<'rating asc' | 'rating desc' | 'created_at asc' | 'created_at desc'>('rating desc');
   const navigate = useNavigate();
   const userContext = useUserContext();
@@ -45,7 +48,7 @@ const BookDetailsPage: React.FC = () => {
       const { data: reviews } = await supabase
         .from<IBookReviewWithProfile>('reviews_with_profiles')
         .select('*')
-        .eq('book_id', book.id)
+        .eq('google_books_id', book.google_books_id)
         .order('created_at', { ascending: false });
       // showAlert('Loaded reviews: ' + reviews?.length, 'success');
       setReviews(reviews ?? []);
@@ -66,6 +69,18 @@ const BookDetailsPage: React.FC = () => {
     }
   };
 
+  const fetchReviews = async () => {
+    if (!book) return;
+
+    const { data: reviews } = await supabase
+      .from<IBookReviewWithProfile>('reviews_with_profiles')
+      .select('*')
+      .eq('google_books_id', book.google_books_id)
+      .order('created_at', { ascending: false });
+
+    setReviews(reviews ?? []);
+  }
+
   const buildStars = (rating: number): JSX.Element[] => {
       const stars: JSX.Element[] = [];
       
@@ -80,6 +95,20 @@ const BookDetailsPage: React.FC = () => {
       }
       return stars;
     };
+
+  const handleAddAiGeneratedReviews = async (book: IBook) => {
+    try {
+      setAiLoading(true);
+      await addAiGeneratedReviews(book);
+      await fetchReviews();
+    }
+    catch (error) {
+        console.error('Error adding book:', error);
+    }
+    finally {
+      setAiLoading(false);
+    }
+  }
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
@@ -144,12 +173,26 @@ const BookDetailsPage: React.FC = () => {
                 <button onClick={() => window.open(book.preview_link!)} className="mt-4 w-full bg-green-500 text-white py-2 rounded">Preview this book</button>
               )}
               
-              {hasUserReviewed && (
+              {/* {hasUserReviewed && (
                 <button onClick={() => navigate('/edit-book-review/' + book.google_books_id)} className="mt-4 w-full bg-yellow-500 text-white py-2 rounded">Edit your review</button>
-              )}
+              )} */}
 
               {!hasUserReviewed && (
                 <button onClick={() => navigate('/create-book-review/' + book.google_books_id)} className="mt-4 w-full bg-red-500 text-white py-2 rounded">Create your own review</button>
+              )}
+
+              {reviews.length < 3 && (
+                <button onClick={() => handleAddAiGeneratedReviews(book)} className="mt-4 w-full bg-yellow-500 text-white py-2 rounded">
+                  {aiLoading ? (
+                    <span className="flex items-center">
+                      <IoSparklesSharp className="animate-spin mx-2" /> Adding AI Reviews
+                    </span>
+                  ) : (
+                    <span className="flex items-center">
+                      <IoSparklesSharp className="mx-2" /> Add AI Generated Reviews
+                    </span>
+                  )}
+                </button>
               )}
             </div>
 
@@ -161,7 +204,7 @@ const BookDetailsPage: React.FC = () => {
                 <p className="text-left text-2xl text-gray-600">{book.authors?.join(', ')}</p>
               </div>
               
-              <p className="py-4 text-left text-gray-700 mb-4">{book.description}</p>
+              <p className="py-4 text-left text-wrap text-gray-700 mb-4">{book.description}</p>
               
               {/* Book Details */}
               <div className="grid grid-cols-2 gap-4 mb-8">
@@ -230,12 +273,12 @@ const BookDetailsPage: React.FC = () => {
                   {reviews.map((review, index) => (
                     <div key={index} className="mb-4 p-4 bg-white rounded shadow">
                       <div className="flex items-left mb-2">
-                        <img src={review.profile?.avatar_url ?? '/src/assets/placeholder1.png'} alt={review.profile?.full_name} className="w-12 h-12 rounded-full" />
+                        <img src={review.avatar_url ?? '/src/assets/placeholder1.png'} alt={review?.full_name} className="w-12 h-12 rounded-full object-cover" />
                         <div className="mx-4 font-bold">{review.full_name} rated it </div>
                         {buildStars(review.rating)}
                       </div>
 
-                      <p className="mt-2" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(review.review_text) }}></p>
+                      <p className="text-left text-wrap mt-2" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(review.review_text) }}></p>
                     </div>
                   ))}
                 </div>

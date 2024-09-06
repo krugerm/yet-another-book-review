@@ -4,7 +4,8 @@ interface ImportMetaEnv {
     readonly VITE_SUPABASE_URL: string;
     readonly VITE_SUPABASE_ANON_KEY: string;
     
-    // Add more environment variables here if needed
+    readonly GOOGLE_BOOKS_API_KEY: string;
+    readonly OPENAI_API_KEY: string;
   }
   
   interface ImportMeta {

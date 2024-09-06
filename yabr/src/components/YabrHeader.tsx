@@ -14,6 +14,7 @@ import { useUserContext } from '../UserContext';
 import type { IUserProfile } from '../types/iUserProfile';
 import { supabase } from "../supabaseClient";
 import { useTranslation } from "react-i18next";
+import { addAiGeneratedReviewsForAllBooks } from "../utils/generateAiReviews";
 
 export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: boolean}> = ({ initSearchTerm, showSearchBar}) => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
   }, [initSearchTerm]);
 
   if (!userContext) {
-    return null; // or handle the null case appropriately
+    return null;
   }
   const { userProfile, loading } = userContext;
 
@@ -37,6 +38,10 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
     } catch (error) {
       console.error('Error logging out:', error.message);
     }
+  };
+
+  const handleGenerateAiReviewsForAllBooks = async () => {
+    await addAiGeneratedReviewsForAllBooks();
   };
 
   return (
@@ -87,15 +92,11 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
               inline
               label={
                 userProfile.avatar_url ? 
-                <Avatar
-                  alt="User settings"
-                  img={userProfile.avatar_url}
-                  rounded
-                /> :
+                <img src={userProfile.avatar_url ?? '/src/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
+                :
                 <HiUserCircle size={32} />
               }
             >
-              <p>{userProfile.avatar_url ?? "testing"}</p>
               <Dropdown.Header className="text-left">
                 <span className="block text-sm font-bold">
                   {userProfile.full_name ?? userProfile.username}
@@ -104,8 +105,8 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                 {userProfile.username ?? "unknown"}
                 </span> */}
               </Dropdown.Header>
-              {/* <Dropdown.Item>Your Reviews</Dropdown.Item>
-              <Dropdown.Divider /> */}
+              <Dropdown.Item onClick={() => handleGenerateAiReviewsForAllBooks()}>Generate AI Reviews</Dropdown.Item>
+              <Dropdown.Divider />
               <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
             </Dropdown>
           )}

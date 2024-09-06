@@ -16,7 +16,6 @@ export function convertGoogleBookToIBook(googleBookData: any): IBook {
   // console.log('convertGoogleBookToIBook volumeInfo:', volumeInfo);
 
   const bookData: IBook = {
-    id: id,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     google_books_id: id,
