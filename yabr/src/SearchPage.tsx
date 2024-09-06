@@ -108,8 +108,8 @@ const SearchPage: React.FC = () => {
 
       <YabrHeader showSearchBar={false} />
 
-      <section className="p-12">
-        <label htmlFor="search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+      <section className="p-4">
+        <h2 className="mb-2 text-left text-l font-semibold text-gray-900 dark:text-white">Search our book reviews...</h2>
         
         <div className="relative">
 
@@ -148,7 +148,7 @@ const SearchPage: React.FC = () => {
       </section>
 
       {/* Search Results */}
-      <section className="p-12">
+      <section className="p-0">
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-700">RESULTS</h2>

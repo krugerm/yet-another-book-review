@@ -4,16 +4,25 @@ import { YabrHeader } from "./components/YabrHeader";
 import { YabrFooter } from "./components/YabrFooter";
 import { Button } from "flowbite-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useUserContext } from './UserContext';
 
 const LoginPage: React.FC = () => {
   const { next } = useParams<{ next?: string }>();
+  const navigate = useNavigate();
+  const userContext = useUserContext();
+
+  useEffect(() => {
+    if (userContext?.userProfile) {
+      navigate('/');
+      return;
+    }
+  }, [userContext]);
   
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
   
   const handleLogout = async () => {
     try {

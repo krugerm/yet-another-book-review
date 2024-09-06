@@ -58,7 +58,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
 
         <div className="flex items-center flex-grow justify-end">
 
-          {(showSearchBar ?? true) && (
+          {/* {(showSearchBar ?? true) && (
             <div className="hidden md:block flex-grow max-w-md mr-4">
               <form onSubmit={() => navigate('/search/' + searchTerm)}>
                 <TextInput
@@ -73,7 +73,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                 />
               </form>
             </div>
-          )}
+          )} */}
 
           {loading ? (
             <div>Loading...</div>
@@ -104,8 +104,8 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                 {userProfile.username ?? "unknown"}
                 </span> */}
               </Dropdown.Header>
-              <Dropdown.Item>Your Reviews</Dropdown.Item>
-              <Dropdown.Divider />
+              {/* <Dropdown.Item>Your Reviews</Dropdown.Item>
+              <Dropdown.Divider /> */}
               <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
             </Dropdown>
           )}

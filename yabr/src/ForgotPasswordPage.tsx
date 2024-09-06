@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { supabase } from "./supabaseClient";
 import { YabrHeader } from "./components/YabrHeader";
 import { YabrFooter } from "./components/YabrFooter";
 import { Button } from "flowbite-react";
+import { useUserContext } from './UserContext';
+import { useNavigate, useParams } from "react-router-dom";
 
 const ForgotPasswordPage = () => {
+  const navigate = useNavigate();
+  const userContext = useUserContext();
+  
+  useEffect(() => {
+    if (userContext?.userProfile) {
+      navigate('/');
+      return;
+    }
+  }, [userContext]);
+
   return (
     <div className="bg-white dark:bg-gray-900">
       <YabrHeader />
