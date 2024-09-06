@@ -61,4 +61,5 @@ export interface IBook {
   export interface IBookWithRatings extends IBook {
     average_rating: number;
     review_count: number;
+    last_reviewed: string | null;
   }

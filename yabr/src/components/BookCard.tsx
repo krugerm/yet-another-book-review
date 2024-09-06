@@ -1,8 +1,12 @@
 import React from 'react';
 import type { IBookWithRatings } from '../types/IBook';
+import { useNavigate } from 'react-router-dom';
 
-export const BookCard: React.FC<{ book: IBookWithRatings }> = ({ book }) => (
-    <div className="max-w-sm bg-gray-100 p-4">
+export function BookCard({ book }: { book: IBookWithRatings }) {
+  const navigate = useNavigate();
+
+  return (
+    <div className="max-w-sm bg-gray-100 p-4" onClick={() => navigate('/book/' + book.google_books_id)}>
       <img 
         src={book.thumbnail || '/src/assets/placeholder1.png'} 
         alt={book.title} 
@@ -19,3 +23,4 @@ export const BookCard: React.FC<{ book: IBookWithRatings }> = ({ book }) => (
       </div>
     </div>
   );
+};

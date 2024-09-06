@@ -26,8 +26,8 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/search/:initSearchTerm?" element={<SearchPage />} />
-            <Route path="/book/:id" element={<BookDetailsPage />} />
-            <Route path="/create-book-review" element={<CreateBookReviewPage />} />
+            <Route path="/book/:google_books_id" element={<BookDetailsPage />} />
+            <Route path="/create-book-review/:google_books_id?" element={<CreateBookReviewPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />

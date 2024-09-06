@@ -3,11 +3,21 @@ import { YabrHeader } from "./components/YabrHeader";
 import { YabrFooter } from "./components/YabrFooter";
 import { Button } from "flowbite-react";
 import { useUserContext } from './UserContext';
+import { useAlert } from './AlertContext';
 import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "./supabaseClient";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
   const userContext = useUserContext();
+  const { showAlert } = useAlert();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
+  const { next } = useParams();
 
   useEffect(() => {
     if (userContext?.userProfile) {
@@ -15,6 +25,29 @@ const RegisterPage = () => {
       return;
     }
   }, [userContext]);
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      alert("Signing up with email / password: " + JSON.stringify([email, password]));
+      const { data, error } = await supabase.auth.signUp({email: email, password: password});
+      if (error) {
+        throw error;
+      }
+
+      showAlert("Please check your email to confirm your email address.", "success");
+      
+      navigate('/login');
+    } catch (error) {
+      showAlert("An error occurred. Please try again later.\n" + JSON.stringify(error), "error");
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white dark:bg-gray-900 shadow-md">
@@ -28,7 +61,7 @@ const RegisterPage = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign Up
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form className="space-y-4 md:space-y-6" action="#" onSubmit={(e) => handleSubmit(e)}>
                 <div>
                   <label
                     htmlFor="email"
@@ -40,6 +73,8 @@ const RegisterPage = () => {
                     type="email"
                     name="email"
                     id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
@@ -56,6 +91,8 @@ const RegisterPage = () => {
                     type="password"
                     name="password"
                     id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -72,6 +109,8 @@ const RegisterPage = () => {
                     type="password"
                     name="password2"
                     id="password2"
+                    value={password2}
+                    onChange={(e) => setPassword2(e.target.value)}
                     placeholder="••••••••"
                     required
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

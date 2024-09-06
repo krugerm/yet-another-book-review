@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import { type IBook, type IBookWithRatings } from "./types/IBook";
-import { type IBookReview } from "./types/IBookReview";
-import { BookCard } from './components/BookCard';
+import { type IBookReview } from "./types/iBookReview";
 import { YabrHeader } from './components/YabrHeader';
 import { YabrFooter } from './components/YabrFooter';
-import { importBookFromGoogleAPI } from './utils/importBookFromGoogleAPI';
 
-import { useUserContext } from './UserContext';
-import { debounce } from 'lodash'; // For debouncing search
 import { BookSearch } from './components/BookSearch';
 import { ReviewForm } from './components/ReviewForm';
 import { GuidedTour } from './components/GuidedTour';
-import { useTranslation } from 'react-i18next';
 import { ProgressSteps } from './components/ProgressSteps';
 import { HiDocumentText, HiHome, HiSave, HiSearch, HiUpload } from 'react-icons/hi';
+
+import { useUserContext } from './UserContext';
+import { useTranslation } from 'react-i18next';
 
 import { v4 as uuidv4 } from 'uuid';
 import { useAlert } from './AlertContext';
 
 
 const CreateBookReviewPage = () => {
+  const { google_books_id } = useParams<{ google_books_id?: string }>();
+  
   const [nResults, setNResults] = useState(0);
   const [searchResults, setSearchResults] = useState<IBookWithRatings[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -30,7 +30,7 @@ const CreateBookReviewPage = () => {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 
-  const [selectedBook, setSelectedBook] = useState<IBook | null>(null);
+  const [selectedBook, setSelectedBook] = useState<IBookWithRatings | null>(null);
   const [showTour, setShowTour] = useState(false);
   const userContext = useUserContext();
   const { userProfile } = userContext!;
@@ -44,10 +44,37 @@ const CreateBookReviewPage = () => {
     } else {
       fetchBooks();
     }
-  }, []);
+
+    if (google_books_id) {
+      fetchBook(google_books_id);
+      setCurrentStep(1);
+    }
+  }, [userProfile, google_books_id]);
+
+  const fetchBook = async (google_books_id: string) => {
+    try {
+      setLoading(true);
+
+      const { data: book } = await supabase
+        .from<IBookWithRatings>('books_with_ratings')
+        .select('*')
+        .eq('google_books_id', google_books_id)
+        .single();
+
+      // console.log("fetchBook", book);
+
+      setSelectedBook(book);
+    }
+    catch (error) {
+      showAlert('Error fetching book details', 'error');
+      console.error('Error fetching books:', error);
+    }
+    finally {
+      setLoading(false);
+    }
+  };
 
   const fetchBooks = async () => {
-
     try {
       setLoading(true);
       
@@ -55,13 +82,12 @@ const CreateBookReviewPage = () => {
         .from<IBookWithRatings>('books_with_ratings')
         .select('*', { count: 'exact' });
 
-      if (searchTerm != null && searchTerm.length > 0) {
+      if (google_books_id != null) {
+        query = query.eq('google_books_id', google_books_id);
+      }
+      else if (searchTerm != null && searchTerm.length > 0) {
         query = query
         .textSearch('title, description, authors, isbn', searchTerm);
-        // .ilike('title', searchTerm)
-        // .ilike('description', searchTerm)
-        // .ilike('authors', searchTerm)
-        // .ilike('isbn', searchTerm);
       }
 
       var { data: results, error, count } = await query
@@ -115,12 +141,13 @@ const CreateBookReviewPage = () => {
       const { data: existingBook } = await supabase
         .from('books')
         .select('*')
-        .eq('google_books_id', selectedBook.id)
+        .eq('google_books_id', selectedBook.google_books_id)
         .single();
 
       // console.log("existingBook", existingBook);
 
       let bookId;
+      let googleBooksId;
       if (!existingBook) {
         // console.log("inserting book: ", selectedBook);
         
@@ -142,8 +169,10 @@ const CreateBookReviewPage = () => {
           throw new Error('Error inserting book');
         }
         bookId = data.id;
+        googleBooksId = data.google_books_id;
       } else {
         bookId = existingBook.id;
+        googleBooksId = existingBook.google_books_id;
       }
 
       // console.log("UserProfile: ", userProfile);
@@ -157,7 +186,7 @@ const CreateBookReviewPage = () => {
         created_at: new Date().toISOString(),
       };
 
-      // console.log("About to upsert reviewData", reviewData);
+      // showAlert("About to insert reviewData: " + JSON.stringify(reviewData), 'info');
 
       const { data, error } = await supabase
         .from('reviews')
@@ -166,7 +195,7 @@ const CreateBookReviewPage = () => {
         .single();
 
       if (error) {
-        showAlert(t('Error creating review') + error, 'error');
+        showAlert(t('Error creating review') + JSON.stringify(error), 'error');
         // console.error('Error creating review:', error);
         return null;
       }
@@ -174,7 +203,7 @@ const CreateBookReviewPage = () => {
       showAlert(t('Review submitted successfully!'), 'success');
 
       // navigate to the book detail page to see your review
-      navigate('/book/' + bookId);
+      navigate('/book/' + googleBooksId);
     } catch (error) {
       console.error('Error submitting review:', error);
       showAlert(t('An error occurred while submitting your review. Please try again.'), 'error');

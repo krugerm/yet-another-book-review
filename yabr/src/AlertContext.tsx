@@ -18,6 +18,7 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   // Function to show the alert with a message and type
   const showAlert = (message: string, type: AlertType) => {
+    console.log(`showAlert ${type}: ${message}`);
     setAlertMessage(message);
     setAlertType(type);
     setTimeout(() => setAlertMessage(null), 5000); // Hide alert after 5 seconds

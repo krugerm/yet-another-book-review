@@ -26,7 +26,8 @@ const HomePage = () => {
       const { data: topRated } = await supabase
         .from<IBookWithRatings>('books_with_ratings')
         .select('*')
-        .order('average_rating', { ascending: false })
+        //.order('average_rating', { ascending: false })
+        .order('last_reviewed', { ascending: false })
         .limit(5);
       setTopRatedBooks(topRated);
 
@@ -34,7 +35,8 @@ const HomePage = () => {
         .from<IBookWithRatings>('books_with_ratings')
         .select('*')
         .neq('thumbnail', null)
-        .order('created_at', { ascending: false })
+        .order('last_reviewed', { ascending: false })
+        //.order('created_at', { ascending: false })
         .order('title', { ascending: false })
         .limit(12);
 
@@ -97,7 +99,7 @@ const HomePage = () => {
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-700">RECENT REVIEWS</h2>
-            <a href="#" className="text-pink-500 hover:text-pink-600">VIEW ALL →</a>
+            <a href="/search" className="text-pink-500 hover:text-pink-600">VIEW ALL →</a>
           </div>
 
           {

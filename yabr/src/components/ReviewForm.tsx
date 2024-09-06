@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import type { IBook } from '../types/IBook';
+import type { IBookWithRatings } from '../types/IBook';
 import { Button } from 'flowbite-react';
 import { Breadcrumb } from "flowbite-react";
 import { HiHome } from "react-icons/hi";
+import { BookCard } from './BookCard';
 
 interface ReviewFormProps {
-  book: IBook;
-  onSubmit: (rating: number, content: String) => void;
+  book: IBookWithRatings;
+  onSubmit: (rating: number, content: string) => void;
 }
 
 export function ReviewForm({ book, onSubmit }: ReviewFormProps) {
@@ -22,10 +23,16 @@ export function ReviewForm({ book, onSubmit }: ReviewFormProps) {
     onSubmit(rating, content);
   };
 
+  console.log(book);
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
 
-      <div>
+      <div className="flex justify-center items-center">
+        <BookCard book={book} />
+      </div>
+
+      {/* <div>
         <h2 className="text-2xl font-bold">{book.title}</h2>
         <p>{book.authors?.join(', ')}</p>
         <img 
@@ -33,7 +40,7 @@ export function ReviewForm({ book, onSubmit }: ReviewFormProps) {
           alt={book.title} 
           className="w-32 h-48 object-cover mx-auto"
         />
-      </div>
+      </div> */}
       
       <div>
         <label className="block mb-2">{t('Rating')}</label>

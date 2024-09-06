@@ -120,31 +120,12 @@ const SearchPage: React.FC = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               />
 
-            <div className="absolute inset-y-0 end-0 bottom-2.5 p-2.5 h-full v-full flex items-center">
-
-              {/* {(searchTerm && searchTerm.length > 0) && (
-                <button 
-                  onClick={() => setSearchTerm('')}
-                  type="button" 
-                  className="text-gray-700 bg-transparent hover:text-gray-400 focus:ring-4 focus:outline-none focus:ring-blue-300 p-2">
-                  <HiOutlineXCircle className="w-8 h-8" />
-                </button>
-              )} */}
-
-              {/* <button 
-                onClick={() => fetchBooks()}
-                type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                  Search
-              </button> */}
-
-            </div>
-
           </form>
         </div>
       </section>
 
       {/* Search Results */}
-      <section className="p-0">
+      <section className="px-4">
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-700">RESULTS</h2>
