@@ -15,7 +15,7 @@ export default function AuthPage() {
     const { error } = await supabase.auth.signInWithOtp({ email });
 
     if (error) {
-      alert(error.error_description || error.message);
+      alert(error.message);
     } else {
       alert("Check your email for the login link!");
     }

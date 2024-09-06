@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase } from './supabaseClient';
 import { Session, User } from '@supabase/supabase-js';
 import type { IUserProfile } from './types/iUserProfile';
+import type { Database } from './types/supabase';
 
 
 export interface UserContextType {

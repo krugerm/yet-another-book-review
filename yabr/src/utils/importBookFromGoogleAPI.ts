@@ -1,8 +1,11 @@
-import { supabase } from './supabaseClient';
+import { supabase } from '../supabaseClient';
+import { IBook } from '../types/IBook';
 
-async function importBookFromGoogleAPI(googleBookData: any) {
+export function convertGoogleBookToIBook(googleBookData: any): IBook {
+  // console.log('convertGoogleBookToIBook Converting book:', googleBookData);
+
   const {
-    id: google_books_id,
+    id,
     etag,
     selfLink: self_link,
     volumeInfo,
@@ -10,8 +13,13 @@ async function importBookFromGoogleAPI(googleBookData: any) {
     accessInfo
   } = googleBookData;
 
-  const bookData = {
-    google_books_id,
+  // console.log('convertGoogleBookToIBook volumeInfo:', volumeInfo);
+
+  const bookData: IBook = {
+    id: id,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    google_books_id: id,
     etag,
     self_link,
     title: volumeInfo.title,
@@ -64,6 +72,14 @@ async function importBookFromGoogleAPI(googleBookData: any) {
     access_view_status: accessInfo.accessViewStatus,
     quote_sharing_allowed: accessInfo.quoteSharingAllowed
   };
+
+  return bookData;
+}
+
+async function importBookFromGoogleAPI(googleBookData: any): Promise<IBook | null> {
+  const bookData = convertGoogleBookToIBook(googleBookData);
+
+  // console.log('importBookFromGoogleAPI Importing book:', bookData);
 
   const { data, error } = await supabase
     .from('books')

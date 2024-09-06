@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabaseClient'
 import PropTypes from 'prop-types';
+import React from 'react';
 
-Avatar.propTypes = {
+YabrAvatar.propTypes = {
   url: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
   onUpload: PropTypes.func.isRequired,
 };
 
-export default function Avatar({ url, size, onUpload }) {
-  const [avatarUrl, setAvatarUrl] = useState(null)
-  const [uploading, setUploading] = useState(false)
+export default function YabrAvatar({ url, size, onUpload }) {
+  const [avatarUrl, setAvatarUrl] = useState<string | null>();
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (url) downloadImage(url)

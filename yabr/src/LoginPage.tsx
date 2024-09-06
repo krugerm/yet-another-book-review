@@ -3,9 +3,11 @@ import { supabase } from "./supabaseClient";
 import { YabrHeader } from "./components/YabrHeader";
 import { YabrFooter } from "./components/YabrFooter";
 import { Button } from "flowbite-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const LoginPage = () => {
+const LoginPage: React.FC = () => {
+  const { next } = useParams<{ next?: string }>();
+  
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,6 +15,15 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error.message);
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -26,8 +37,7 @@ const LoginPage = () => {
 
       if (error) throw error;
 
-      //TODO: Login successful, redirect or update UI here
-      navigate("/");
+      navigate(next || '/');
     } catch (error) {
       setError(error.message);
     } finally {
@@ -36,10 +46,10 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900">
+    <div className="bg-white dark:bg-gray-900 shadow-md">
       <YabrHeader />
 
-      <section className="bg-gray-50 dark:bg-gray-900 shadow-md">
+      <section className="bg-gray-50 dark:bg-gray-900">
         <div className="flex flex-col items-center px-6 py-12 mx-auto md:h-screen lg:py-12">
 
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -116,7 +126,7 @@ const LoginPage = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="btn bg-primary-700 w-full text-white hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                  className="bg-blue-700 w-full text-white hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
                   {loading ? 'Signing in...' : 'Sign in'}
                 </Button>

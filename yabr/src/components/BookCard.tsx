@@ -4,7 +4,7 @@ import type { IBookWithRatings } from '../types/IBook';
 export const BookCard: React.FC<{ book: IBookWithRatings }> = ({ book }) => (
     <div className="max-w-sm bg-gray-100 p-4">
       <img 
-        src={book.thumbnail || '/placeholder-book.jpg'} 
+        src={book.thumbnail || '/src/assets/placeholder1.png'} 
         alt={book.title} 
         className="w-32 h-48 object-cover mx-auto" // Updated size and centering
       />

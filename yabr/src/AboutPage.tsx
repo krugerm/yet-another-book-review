@@ -1,9 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from './supabaseClient';
-import { Carousel } from 'flowbite-react';
-import type { IBook, IBookWithRatings } from "./types/IBook";
-import { importBookFromGoogleAPI } from './importGoogleBook';
-import { BookCard } from './components/BookCard';
 import { YabrHeader } from './components/YabrHeader';
 import { YabrFooter } from './components/YabrFooter';
 
@@ -11,10 +6,10 @@ import { YabrFooter } from './components/YabrFooter';
 const AboutPage = () => {
 
   return (
-    <div className="bg-white dark:bg-gray-900">
+    <div className="bg-white dark:bg-gray-900 shadow-md">
       <YabrHeader />
 
-      <section className="bg-white dark:bg-gray-900 shadow-md">
+      <section className="bg-white dark:bg-gray-900">
         <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md text-left">
             
           <h1 className="text-3xl font-bold mb-4">About Yet Another Book Review</h1>

@@ -4,10 +4,10 @@ import { YabrFooter } from "./components/YabrFooter";
 
 const TermsAndConditionsPage = () => {
   return (
-    <div className="bg-white dark:bg-gray-900">
+    <div className="bg-white dark:bg-gray-900 shadow-md">
       <YabrHeader />
 
-      <section className="bg-white dark:bg-gray-900 shadow-md">
+      <section className="bg-white dark:bg-gray-900">
         <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md text-left">
           <h1 className="text-3xl font-bold mb-4">Terms and Conditions</h1>
           <p className="text-sm text-gray-500 mb-6">Last updated: [Date]</p>

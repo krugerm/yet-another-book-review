@@ -7,6 +7,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
     // "node_modules/flowbite-react/lib/esm/**/*.js",
+    // "node_modules/@tailwindcss/line-clamp/**/*.js",
     flowbiteReact.content(),
   ],
   theme: {
@@ -16,7 +17,7 @@ export default {
       },
       colors: {
         bg: {
-          primary: '#155e75',
+          primary: 'white',
         },
         primary: {
           DEFAULT: '#3490dc',
@@ -24,24 +25,22 @@ export default {
           dark: '#2779bd',
         },
       },
+      button: {
+        backgroundColor: 'transparent',
+        '&:hover': {
+          backgroundColor: 'transparent',
+        },
+      },
     },
   },
   plugins: [
-    flowbiteReact.plugin(),
+    require('flowbite/plugin'),
+
     plugin(function({ addBase, theme }) {
       addBase({
         'label': {
           textAlign: theme('textAlign.left'),
         },
-        // 'button': {
-        //   padding: '0.5rem 1rem',
-        //   borderRadius: '0.25rem',
-        //   color: 'white',
-        //   backgroundColor: theme('colors.primary.DEFAULT'),
-        //   '&:hover': {
-        //     backgroundColor: theme('colors.primary.dark'),
-        //   },
-        // },
       })
     })
   ],

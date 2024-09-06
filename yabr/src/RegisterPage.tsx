@@ -6,10 +6,10 @@ import { Button } from "flowbite-react";
 
 const RegisterPage = () => {
   return (
-    <div className="bg-white dark:bg-gray-900">
+    <div className="bg-white dark:bg-gray-900 shadow-md">
       <YabrHeader />
 
-      <section className="bg-gray-50 dark:bg-gray-900 shadow-md">
+      <section className="bg-gray-50 dark:bg-gray-900">
         <div className="flex flex-col items-center px-6 py-12 mx-auto md:h-screen lg:py-12">
 
           <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -94,7 +94,7 @@ const RegisterPage = () => {
                 </div>
                 <Button
                   type="submit"
-                  className="btn bg-primary-700 w-full text-white hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                  className="bg-blue-700 hover:bg-blue-900 w-full text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
                   Sign in
                 </Button>
