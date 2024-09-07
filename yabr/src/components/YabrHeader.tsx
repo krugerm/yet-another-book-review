@@ -61,77 +61,90 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
           </span>
         </NavbarBrand>
 
-        <div className="flex items-center flex-grow justify-end">
-
-          {/* {(showSearchBar ?? true) && (
-            <div className="hidden md:block flex-grow max-w-md mr-4">
-              <form onSubmit={() => navigate('/search/' + searchTerm)}>
-                <TextInput
-                  id="searchText1"
-                  type="text"
-                  icon={HiSearch}
-                  placeholder={t("Search reviewed books...")}
-                  required
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full"
-                />
-              </form>
-            </div>
-          )} */}
-
-          <Button className="btn bg-blue-700 mx-4" onClick={() => navigate("/create-book-review")}>
-            Create a review
-          </Button>
+        <div className="hidden md:flex items-center flex-grow justify-end">
 
           {loading || userContext.loading ? (
             <div>Loading...</div>
           ) : !userProfile ? (
             <Button className="btn bg-blue-700" onClick={() => navigate("/login")}>
-              Login
+              Login to create a review
             </Button>
           ) : (
-            <Dropdown
-              arrowIcon={false}
-              inline
-              label={
-                userProfile.avatar_url ? 
-                <img src={userProfile.avatar_url ?? '/src/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
-                :
-                <HiUserCircle size={32} />
-              }
-            >
-              <Dropdown.Header className="text-left">
-                <span className="block text-sm font-bold">
-                  {userProfile.full_name ?? userProfile.username}
-                </span>
-                {/* <span className="block truncate text-sm font-medium">
-                {userProfile.username ?? "unknown"}
-                </span> */}
-              </Dropdown.Header>
-              <Dropdown.Item onClick={() => handleGenerateAiReviewsForAllBooks()}>Generate AI Reviews</Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
-            </Dropdown>
+            <>
+              <Button className="btn bg-blue-700 mx-4" onClick={() => navigate("/create-book-review")}>
+                Create a review
+              </Button>
+
+              <Dropdown
+                arrowIcon={false}
+                inline
+                label={
+                  userProfile.avatar_url ? 
+                  <img src={userProfile.avatar_url ?? '/src/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
+                  :
+                  <HiUserCircle size={32} />
+                }
+              >
+                <Dropdown.Header className="text-left">
+                  <span className="block text-sm font-bold">
+                    {userProfile.full_name ?? userProfile.username}
+                  </span>
+                  {/* <span className="block truncate text-sm font-medium">
+                  {userProfile.username ?? "unknown"}
+                  </span> */}
+                </Dropdown.Header>
+                <Dropdown.Item onClick={() => handleGenerateAiReviewsForAllBooks()}>Generate AI Reviews</Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
+              </Dropdown>
+            </>
           )}
         </div>
       </div>
 
-      {(showSearchBar ?? true) && (
+
       <div className="md:hidden mt-4 w-full">
-        <form>
-          <TextInput
-            id="searchText2"
-            type="text"
-            icon={HiSearch}
-            placeholder={t("Search reviewed books...")}
-            required
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full"
-          />
-        </form>
-      </div>)}
+        
+        <div className="flex items-center flex-grow justify-end sm:justify-between">
+          {loading || userContext.loading ? (
+            <div>Loading...</div>
+          ) : !userProfile ? (
+            <Button className="btn bg-blue-700" onClick={() => navigate("/login")}>
+              Login to create a review
+            </Button>
+          ) : (
+            <>
+              <Button className="btn bg-blue-700 mx-4" onClick={() => navigate("/create-book-review")}>
+                Create a review
+              </Button>
+
+              <Dropdown
+                arrowIcon={false}
+                inline
+                label={
+                  userProfile.avatar_url ? 
+                  <img src={userProfile.avatar_url ?? '/src/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
+                  :
+                  <HiUserCircle size={32} />
+                }
+              >
+                <Dropdown.Header className="text-left">
+                  <span className="block text-sm font-bold">
+                    {userProfile.full_name ?? userProfile.username}
+                  </span>
+                  {/* <span className="block truncate text-sm font-medium">
+                  {userProfile.username ?? "unknown"}
+                  </span> */}
+                </Dropdown.Header>
+                <Dropdown.Item onClick={() => handleGenerateAiReviewsForAllBooks()}>Generate AI Reviews</Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
+              </Dropdown>
+            </>
+          )}
+        </div>
+
+      </div>
     </Navbar>
   );
 };

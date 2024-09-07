@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useAlert } from './AlertContext';
 
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import { Pagination } from "flowbite-react";
 
 
 const CreateBookReviewPage = () => {
@@ -190,7 +191,7 @@ const CreateBookReviewPage = () => {
         id: uuidv4(),
         rating: rating,
         review_text: content,
-        user_id: userProfile.id,
+        user_id: userProfile!.id,
         google_books_id: googleBooksId,
         created_at: new Date().toISOString(),
       };

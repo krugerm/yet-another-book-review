@@ -21,7 +21,7 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState("");
+  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState(null);
   
   const handleLogout = async () => {
@@ -105,7 +105,7 @@ const LoginPage: React.FC = () => {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-start">
+                  {/* <div className="flex items-start">
                     <div className="flex items-center h-5">
                       <input
                         id="remember"
@@ -124,7 +124,7 @@ const LoginPage: React.FC = () => {
                         Remember me
                       </label>
                     </div>
-                  </div>
+                  </div> */}
                   <a
                     href="/forgotPassword"
                     className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"

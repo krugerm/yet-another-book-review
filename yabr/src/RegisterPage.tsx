@@ -117,7 +117,7 @@ const RegisterPage = () => {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-start">
+                  {/* <div className="flex items-start">
                     <div className="flex items-center h-5">
                       <input
                         id="remember"
@@ -134,7 +134,7 @@ const RegisterPage = () => {
                         Remember me
                       </label>
                     </div>
-                  </div>
+                  </div> */}
                   <a
                     href="/forgotPassword"
                     className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"

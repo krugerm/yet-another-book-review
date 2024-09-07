@@ -1,39 +1,57 @@
-import React, { useState, useCallback } from 'react';
-import { debounce } from 'lodash';
+import React, { useState, useEffect, useCallback } from 'react';
+import debounce from 'lodash/debounce';
 import { useTranslation } from 'react-i18next';
 import type { IBook } from '../types/IBook';
 import { convertGoogleBookToIBook } from '../utils/importBookFromGoogleAPI';
 import { Button } from 'flowbite-react';
+import { Pagination } from "flowbite-react";
 
 export function BookSearch({ onSelectBook }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<IBook[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [nResults, setNResults] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  const googleBooksApiKey: string = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY as string;
+
   const { t } = useTranslation();
+
+  const onPageChange = (page: number) => setCurrentPage(page);
+
+  useEffect(() => {
+    searchBooks(searchTerm);
+  }, [searchTerm, currentPage, pageSize]);
 
   const searchBooks = useCallback(
     debounce(async (term) => {
+      // console.log('searchBooks.debounce: ' + JSON.stringify([term, searchTerm, currentPage, pageSize]));
+
       if (!term) return;
-      setIsLoading(true);
+      setLoading(true);
       try {
-        const response = await fetch(
-          `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(term)}`
-        );
+        const url = `https://www.googleapis.com/books/v1/volumes?maxResults=${pageSize}&startIndex=${(currentPage - 1) * pageSize}&key=${googleBooksApiKey}&q=${encodeURIComponent(term)}`;
+        // console.log('searchBooks url:', url);
+        const response = await fetch(url);
         const data = await response.json();
-        console.log('Search results:', data.items);
+        // console.log('searchBooks results:', data.items);
         const books = data.items.map(convertGoogleBookToIBook);
+        const totalItems = data.totalItems;
+        setNResults(totalItems);
         setSearchResults(books || []);
       } catch (error) {
         console.error('Error searching books:', error);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     }, 300),
     []
   );
 
-  const handleSearchChange = (e) => {
-    const term = e.target.value;
+  const handleSearchChange = (term) => {
+    // console.log('handleSearchChange', term);
     setSearchTerm(term);
     searchBooks(term);
   };
@@ -43,11 +61,19 @@ export function BookSearch({ onSelectBook }) {
       <input
         type="text"
         value={searchTerm}
-        onChange={handleSearchChange}
+        onChange={(e) => handleSearchChange(e.target.value)}
         placeholder={t('Search for a book...')}
         className="w-full p-2 border rounded"
       />
-      {isLoading && <p>{t('Searching...')}</p>}
+
+      {/* <p>{loading} {searchTerm} {nResults} {pageSize}</p> */}
+      {(Math.ceil(nResults / pageSize) > 1) && (
+        <div className="flex overflow-x-auto justify-between">
+          <p className="hidden text-left my-auto">Showing {(currentPage - 1) * pageSize + 1} to {Math.min(nResults, (currentPage) * pageSize)} of {nResults} results</p>
+          <Pagination currentPage={currentPage} totalPages={Math.ceil(nResults / pageSize)} onPageChange={onPageChange} />
+        </div>)}
+
+      {loading && <p className='my-4'>{t('Searching...')}</p>}
       <ul className="mt-4 space-y-4">
         {searchResults.map((book) => (
           <li key={book.google_books_id} className="flex items-start space-x-4 p-2 border rounded" onClick={() => onSelectBook(book)}>
@@ -74,6 +100,11 @@ export function BookSearch({ onSelectBook }) {
           </li>
         ))}
       </ul>
+
+      {(!loading && Math.ceil(nResults / pageSize) > 1) && (
+        <div className="flex overflow-x-auto sm:justify-center">
+          <Pagination currentPage={currentPage} totalPages={Math.ceil(nResults / pageSize)} onPageChange={onPageChange} />
+        </div>)}
     </div>
   );
 }
