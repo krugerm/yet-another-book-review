@@ -64,13 +64,20 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
         <div className="hidden md:flex items-center flex-grow justify-end">
 
           {loading || userContext.loading ? (
-            <div>Loading...</div>
+            <>
+              <div className="hidden" id="user-loading"/>
+              <div id="user-profile-loading">Loading...</div>
+            </>
           ) : !userProfile ? (
-            <Button className="btn bg-blue-700" onClick={() => navigate("/login")}>
-              Login to create a review
-            </Button>
+            <>
+              <div className="hidden" id="user-logged-out"></div>
+              <Button className="btn bg-blue-700" onClick={() => navigate("/login")}>
+                Login to create a review
+              </Button>
+            </>
           ) : (
             <>
+              <div className="hidden" id="user-logged-in"></div>
               <Button className="btn bg-blue-700 mx-4" onClick={() => navigate("/create-book-review")}>
                 Create a review
               </Button>
@@ -80,7 +87,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                 inline
                 label={
                   userProfile.avatar_url ? 
-                  <img src={userProfile.avatar_url ?? '/src/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
+                  <img id="user-profile-image" src={userProfile.avatar_url ?? '/src/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
                   :
                   <HiUserCircle size={32} />
                 }
@@ -95,7 +102,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                 </Dropdown.Header>
                 <Dropdown.Item onClick={() => handleGenerateAiReviewsForAllBooks()}>Generate AI Reviews</Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
+                <Dropdown.Item id="btn-logout" onClick={handleLogout}>Sign out</Dropdown.Item>
               </Dropdown>
             </>
           )}
@@ -119,6 +126,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
               </Button>
 
               <Dropdown
+                key="user-profile-dropdown"
                 arrowIcon={false}
                 inline
                 label={
@@ -138,7 +146,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                 </Dropdown.Header>
                 <Dropdown.Item onClick={() => handleGenerateAiReviewsForAllBooks()}>Generate AI Reviews</Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
+                <Dropdown.Item id="btn-logout2" onClick={handleLogout}>Sign out</Dropdown.Item>
               </Dropdown>
             </>
           )}

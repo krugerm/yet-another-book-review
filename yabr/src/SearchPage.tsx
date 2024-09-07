@@ -56,21 +56,18 @@ const SearchPage: React.FC = () => {
       if (s && s.length > 0) {
         results = await supabase.from<IBookWithRatings>('books_with_ratings')
           .select('*', { count: 'exact' })
-          .textSearch('title, description, authors, isbn', s)
+          .textSearch('combined_text', s, {
+            type: 'websearch',
+            config: 'english'
+          })
           .order('last_reviewed', { ascending: false })
-          // .neq('thumbnail', null)
-          // .order('created_at', { ascending: false })
-          // .order('title', { ascending: false })
           .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
       }
       else {
         results = await supabase
           .from<IBookWithRatings>('books_with_ratings')
           .select('*', { count: 'exact' })
-          // .neq('thumbnail', null)
           .order('last_reviewed', { ascending: false })
-          // .order('created_at', { ascending: false })
-          // .order('title', { ascending: false })
           .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
       }
 
@@ -131,12 +128,12 @@ const SearchPage: React.FC = () => {
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-700">RESULTS</h2>
-            <p className="text-left">Showing {(currentPage - 1) * pageSize + 1} to {Math.min(nResults, (currentPage) * pageSize)} of {nResults}</p>
+            <p className="text-left" id="text-showing">Showing {(currentPage - 1) * pageSize + 1} to {Math.min(nResults, (currentPage) * pageSize)} of {nResults}</p>
             {/* <a href="#" onClick={() => setSearchTerm('')} className="text-pink-500 hover:text-pink-600">VIEW ALL</a> */}
 
             {(Math.ceil(nResults / pageSize) > 1) && (
               <div className="flex overflow-x-auto sm:justify-center">
-                <Pagination currentPage={currentPage} totalPages={Math.ceil(nResults / pageSize)} onPageChange={onPageChange} />
+                <Pagination id="pagination" currentPage={currentPage} totalPages={Math.ceil(nResults / pageSize)} onPageChange={onPageChange} />
               </div>)}
           </div>
 
@@ -153,7 +150,7 @@ const SearchPage: React.FC = () => {
             
           {
             !loading && searchResults.length === 0 && (
-              <div className="text-center mb-6">
+              <div className="text-center mb-6" id="no-results-message">
                 <h3 className="text-lg font-bold">No reviewed books found</h3>
                 <p>Check back later for more book reviews</p>
               </div>
