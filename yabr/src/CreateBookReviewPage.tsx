@@ -43,7 +43,8 @@ const CreateBookReviewPage = () => {
   const { showAlert } = useAlert();
 
   useEffect(() => {
-    if (!userProfile) {
+    if (!userContext?.loading && !userProfile) {
+      showAlert(t('You must be logged in to create a review'), 'error');
       navigate('/login?next=/create-book-review');
     } else {
       fetchBooks();
@@ -53,7 +54,7 @@ const CreateBookReviewPage = () => {
       fetchBook(google_books_id);
       setShowCreateReviewModal(true);
     }
-  }, [userProfile, google_books_id]);
+  }, [userContext, userProfile, google_books_id]);
 
   const fetchBook = async (google_books_id: string) => {
     try {
@@ -138,7 +139,7 @@ const CreateBookReviewPage = () => {
   }
 
   const handleReviewSubmit = async () => {
-    if (!userProfile) {
+    if (!userContext?.loading && !userProfile) {
       showAlert(t('You must be logged in to submit a review'), 'error');
       return;
     }
@@ -259,19 +260,6 @@ const CreateBookReviewPage = () => {
               <label className="block mb-2">{t('Your Review')}</label>
               <ReactQuill value={content} onChange={setContent} />
             </div>
-            
-            {/* <div>
-              <div className="mb-2 block">
-                <Label htmlFor="email" value="Your email" />
-              </div>
-              <TextInput
-                id="email"
-                placeholder="name@company.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                required
-              />
-            </div> */}
             
             <div className="w-full">
               <Button onClick={handleReviewSubmit}>Submit</Button>

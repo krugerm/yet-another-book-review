@@ -84,7 +84,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
             Create a review
           </Button>
 
-          {loading ? (
+          {loading || userContext.loading ? (
             <div>Loading...</div>
           ) : !userProfile ? (
             <Button className="btn bg-blue-700" onClick={() => navigate("/login")}>
