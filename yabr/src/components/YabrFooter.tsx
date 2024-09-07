@@ -7,7 +7,7 @@ export const YabrFooter = () => {
     <div className="w-full text-center">
       <div className="w-full justify-between sm:flex sm:items-center sm:justify-between">
         <Footer.Brand
-          src="/src/assets/logo.png"
+          src="/assets/logo.png"
           alt="Yet Another Book Review Logo"
           name="YABR"
         />

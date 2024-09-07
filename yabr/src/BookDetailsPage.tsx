@@ -304,7 +304,7 @@ const BookDetailsPage: React.FC = () => {
           <main className="container mx-auto px-4 py-8 flex">
             {/* Left Column */}
             <div className="w-1/3 pr-8">
-              <img src={(book.thumbnail ? (book.thumbnail + "&fife=w800") : "/src/assets/placeholder1.png")} alt={book.title} className="w-full shadow-lg" />
+              <img src={(book.thumbnail ? (book.thumbnail + "&fife=w800") : "/assets/placeholder1.png")} alt={book.title} className="w-full shadow-lg" />
               
               {book.info_link && (
                 <button onClick={() => window.open(book.info_link!)} className="mt-4 w-full bg-blue-500 text-white py-2 rounded">Buy this book</button>
@@ -414,7 +414,7 @@ const BookDetailsPage: React.FC = () => {
                   {reviews.map((review, index) => (
                     <div key={index} className="mb-4 p-4 bg-white rounded shadow">
                       <div className="flex items-left mb-2">
-                        <img src={review.avatar_url ?? '/src/assets/placeholder1.png'} alt={review?.full_name} className="w-12 h-12 rounded-full object-cover" />
+                        <img src={review.avatar_url ?? '/assets/placeholder1.png'} alt={review?.full_name} className="w-12 h-12 rounded-full object-cover" />
                         <div className="mx-4 font-bold">{review.full_name} rated it </div>
                         {buildStars(review.rating)}
 

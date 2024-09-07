@@ -79,7 +79,7 @@ export function BookSearch({ onSelectBook }) {
           <li key={book.google_books_id} className="flex items-start space-x-4 p-2 border rounded" onClick={() => onSelectBook(book)}>
 
               <img
-                src={book.thumbnail || '/src/assets/placeholder1.png'}
+                src={book.thumbnail || '/assets/placeholder1.png'}
                 alt={book.title}
                 className="w-16 h-24 object-cover"
               />

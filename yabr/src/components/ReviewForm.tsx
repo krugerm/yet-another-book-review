@@ -36,7 +36,7 @@ export function ReviewForm({ book, onSubmit }: ReviewFormProps) {
         <h2 className="text-2xl font-bold">{book.title}</h2>
         <p>{book.authors?.join(', ')}</p>
         <img 
-          src={book.thumbnail || '/src/assets/placeholder1.png'} 
+          src={book.thumbnail || '/assets/placeholder1.png'} 
           alt={book.title} 
           className="w-32 h-48 object-cover mx-auto"
         />

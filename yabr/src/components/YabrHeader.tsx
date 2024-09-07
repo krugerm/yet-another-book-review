@@ -52,7 +52,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
       <div className="flex justify-between items-center w-full">
         <NavbarBrand href="/" className="flex items-center">
           <img
-            src="/src/assets/favicon-32x32.png"
+            src="/assets/favicon-32x32.png"
             className="mr-3 h-6 sm:h-9"
             alt="Yet Another Book Review Logo"
           />
@@ -87,7 +87,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                 inline
                 label={
                   userProfile.avatar_url ? 
-                  <img id="user-profile-image" src={userProfile.avatar_url ?? '/src/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
+                  <img id="user-profile-image" src={userProfile.avatar_url ?? '/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
                   :
                   <HiUserCircle size={32} />
                 }
@@ -131,7 +131,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                 inline
                 label={
                   userProfile.avatar_url ? 
-                  <img src={userProfile.avatar_url ?? '/src/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
+                  <img src={userProfile.avatar_url ?? '/assets/placeholder1.png'} alt={userProfile.full_name ?? userProfile.username ?? 'User'} className="w-12 h-12 rounded-full object-cover" />
                   :
                   <HiUserCircle size={32} />
                 }

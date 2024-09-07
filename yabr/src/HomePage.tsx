@@ -65,7 +65,7 @@ const HomePage = () => {
 
       {/* Hero Section */}
   
-      <section className="relative bg-gray-700 text-white py-20 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/src/assets/library.png')" }}>
+      <section className="relative bg-gray-700 text-white py-20 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/assets/library.png')" }}>
 
         <div className="container mx-auto text-center">
           <h2 className="text-3xl text-white font-bold mb-4 shadow-lg bg-black/20 px-4 py-2 rounded-md">Discover Your Next Favorite Book</h2>
