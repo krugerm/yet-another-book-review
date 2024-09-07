@@ -56,12 +56,12 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             : alertType === 'warning' ? <HiOutlineExclamationCircle className={`mx-auto mb-4 h-14 w-14 ${getAlertStyles(alertType)}`} /> 
             : <HiQuestionMarkCircle className={`mx-auto mb-4 h-14 w-14 ${getAlertStyles(alertType)}`} />}
 
-            <h3 className={`mb-5 text-lg font-normal text-gray-500 dark:text-gray-400 ${getAlertStyles(alertType)}`}>
+            <h3 id={`alert-message-${alertType}`} className={`mb-5 text-lg font-normal text-gray-500 dark:text-gray-400 ${getAlertStyles(alertType)}`}>
               {alertMessage}
             </h3>
 
             <div className="flex justify-center gap-4">
-              <Button color="gray" onClick={() => setOpenModal(false)}>
+              <Button id="alert-btn-ok" color="gray" onClick={() => setOpenModal(false)}>
                 Ok
               </Button>
             </div>

@@ -319,7 +319,7 @@ const BookDetailsPage: React.FC = () => {
               )} */}
 
               {!hasUserReviewed && (
-                <button onClick={() => setShowCreateReviewModal(true)} className="mt-4 w-full bg-red-500 text-white py-2 rounded">Create your own review</button>
+                <button id="btn-create-review" onClick={() => setShowCreateReviewModal(true)} className="mt-4 w-full bg-red-500 text-white py-2 rounded">Create your own review</button>
               )}
 
               {reviews.length < 3 && (
@@ -420,7 +420,7 @@ const BookDetailsPage: React.FC = () => {
 
                         {userProfile && userProfile.id === review.user_id && (
                           <div className="ml-auto text-gray-600 text-right">
-                            <button onClick={() => handleEditButtonClick(review)} className="flex text-blue-700 p-2 rounded outline">
+                            <button id="btn-edit-review" onClick={() => handleEditButtonClick(review)} className="flex text-blue-700 p-2 rounded outline">
                               <FaEdit size={24} className="mr-2" />
                               Edit
                             </button>
@@ -444,7 +444,7 @@ const BookDetailsPage: React.FC = () => {
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Create your book review:</h3>
+            <h3 id="title-create-review" className="text-xl font-medium text-gray-900 dark:text-white">Create your book review:</h3>
 
             <div>
               <label className="block mb-2">{t('Rating')}</label>
@@ -452,6 +452,7 @@ const BookDetailsPage: React.FC = () => {
               <div className="flex items-center space-x-4 p-0">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
+                  id={`create-btn-star-${star}`}
                   key={star}
                   type="button"
                   onClick={() => setReviewRating(star)}
@@ -469,7 +470,7 @@ const BookDetailsPage: React.FC = () => {
             </div>
             
             <div className="w-full grid justify-items-end">
-              <Button className='bg-blue-700' onClick={handleCreateReview}>Submit</Button>
+              <Button id="btn-save-review" className='bg-blue-700' onClick={handleCreateReview}>Submit</Button>
             </div>
 
           </div>
@@ -480,7 +481,7 @@ const BookDetailsPage: React.FC = () => {
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Edit your book review:</h3>
+            <h3 id="title-edit-review" className="text-xl font-medium text-gray-900 dark:text-white">Edit your book review:</h3>
 
             <div>
               <label className="block mb-2">{t('Rating')}</label>
@@ -488,6 +489,7 @@ const BookDetailsPage: React.FC = () => {
               <div className="flex items-center space-x-4 p-0">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
+                  id={`edit-btn-star-${star}`}
                   key={star}
                   type="button"
                   onClick={() => setReviewRating(star)}
@@ -505,8 +507,8 @@ const BookDetailsPage: React.FC = () => {
             </div>
             
             <div className="w-full flex justify-between">
-              <Button className='bg-red-700 text-white' onClick={handleDeleteReview}>Delete</Button>
-              <Button className='bg-blue-700' onClick={handleUpdateReview}>Submit</Button>
+              <Button id="btn-delete-review" className='bg-red-700 text-white' onClick={handleDeleteReview}>Delete</Button>
+              <Button id="btn-update-review" className='bg-blue-700' onClick={handleUpdateReview}>Submit</Button>
             </div>
 
           </div>
