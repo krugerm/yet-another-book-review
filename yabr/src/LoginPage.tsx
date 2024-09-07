@@ -106,7 +106,8 @@ const LoginPage: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <a
-                    href="/forgotPassword"
+                    onClick={() => navigate('/forgotPassword')}
+                    href="#"
                     className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >
                     Forgot password?
@@ -122,7 +123,8 @@ const LoginPage: React.FC = () => {
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Don’t have an account yet?{" "}
                   <a
-                    href="/register"
+                    onClick={() => navigate('/register')}
+                    href="#"
                     className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >
                     Sign up

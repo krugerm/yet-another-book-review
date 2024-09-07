@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { YabrHeader } from "./components/YabrHeader";
 import { YabrFooter } from "./components/YabrFooter";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PrivacyPage = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="bg-white dark:bg-gray-900 shadow-md">
       <YabrHeader />
@@ -68,7 +71,7 @@ const PrivacyPage = () => {
               <h2 className="text-xl font-semibold mb-2">6. Contact Us</h2>
               <p>
                 If you have any questions about this privacy policy, please
-                contact us here: <a href="/contact">Contact Us</a>.
+                contact us here: <a onClick={() => navigate('/contact')} href="#">Contact Us</a>.
               </p>
             </li>
           </ul>

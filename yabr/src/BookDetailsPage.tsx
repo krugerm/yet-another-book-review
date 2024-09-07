@@ -292,7 +292,7 @@ const BookDetailsPage: React.FC = () => {
       )}
 
       <div className="flex text-left px-4 py-0">
-        <a href="/search" className="flex items-center">
+        <a href="#" className="flex items-center" onClick={() => navigate('/search')}>
           <FaArrowLeft className="mr-2" /> All Reviewed Books
         </a>
       </div>

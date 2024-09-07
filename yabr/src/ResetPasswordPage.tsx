@@ -3,8 +3,11 @@ import { supabase } from "./supabaseClient";
 import { YabrHeader } from "./components/YabrHeader";
 import { YabrFooter } from "./components/YabrFooter";
 import { Button } from "flowbite-react";
+import { useNavigate } from 'react-router-dom';
 
 const ResetPasswordPage = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="bg-white dark:bg-gray-900">
       <YabrHeader />
@@ -82,7 +85,8 @@ const ResetPasswordPage = () => {
                     I accept the{" "}
                     <a
                       className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                      href="/terms"
+                      onClick={() => navigate('/terms')}
+                      href="#"
                       target="_blank"
                     >
                       Terms and Conditions

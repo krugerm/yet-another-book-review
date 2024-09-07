@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Footer, FooterBrand, FooterCopyright, FooterDivider, FooterLink, FooterLinkGroup } from "flowbite-react";
+import { useNavigate } from 'react-router-dom';
 
 export const YabrFooter = () => {
+  const navigate = useNavigate();
+
   return (
     <Footer container className="rounded-none rounded-b-lg">
     <div className="w-full text-center">
@@ -12,10 +15,10 @@ export const YabrFooter = () => {
           name="YABR"
         />
         <Footer.LinkGroup>
-          <Footer.Link href="/about">About</Footer.Link>
-          <Footer.Link href="/privacy">Privacy Policy</Footer.Link>
-          <Footer.Link href="/terms">Terms and Conditions</Footer.Link>
-          <Footer.Link href="/contact">Contact</Footer.Link>
+          <Footer.Link href="#" onClick={() => navigate('/about')}>About</Footer.Link>
+          <Footer.Link href="#" onClick={() => navigate('/privacy')}>Privacy Policy</Footer.Link>
+          <Footer.Link href="#" onClick={() => navigate('/terms')}>Terms and Conditions</Footer.Link>
+          <Footer.Link href="#" onClick={() => navigate('/contact')}>Contact</Footer.Link>
         </Footer.LinkGroup>
       </div>
       <Footer.Divider />

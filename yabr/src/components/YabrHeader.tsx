@@ -50,7 +50,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
       className="px-4 py-4 bg-white dark:bg-gray-800 w-full"
     >
       <div className="flex justify-between items-center w-full">
-        <NavbarBrand href="/" className="flex items-center">
+        <NavbarBrand onClick={() => navigate('/')} className="flex items-center">
           <img
             src="/assets/favicon-32x32.png"
             className="mr-3 h-6 sm:h-9"

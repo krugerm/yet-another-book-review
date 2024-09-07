@@ -83,7 +83,7 @@ const HomePage = () => {
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-700">RECENT REVIEWS</h2>
-            <a href="/search" className="text-pink-500 hover:text-pink-600">VIEW ALL →</a>
+            <a href="#" onClick={() => navigate('/search')} className="text-pink-500 hover:text-pink-600">VIEW ALL →</a>
           </div>
 
           {
