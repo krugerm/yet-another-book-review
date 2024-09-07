@@ -25,8 +25,8 @@ const CreateBookReviewPage = () => {
   const { google_books_id } = useParams<{ google_books_id?: string }>();
 
   const [showCreateReviewModal, setShowCreateReviewModal] = useState(false);
-  const [rating, setRating] = useState(0);
-  const [content, setContent] = useState('');
+  const [rating, setReviewRating] = useState(0);
+  const [content, setReviewContent] = useState('');
   
   const [nResults, setNResults] = useState(0);
   const [searchResults, setSearchResults] = useState<IBookWithRatings[]>([]);
@@ -133,13 +133,13 @@ const CreateBookReviewPage = () => {
     setShowCreateReviewModal(true);
   };
 
-  function onCloseModal() {
+  function onCloseCreateReviewModal() {
     setShowCreateReviewModal(false);
-    setRating(0);
-    setContent('');
+    setReviewRating(0);
+    setReviewContent('');
   }
 
-  const handleReviewSubmit = async () => {
+  const handleCreateReview = async () => {
     if (!userContext?.loading && !userProfile) {
       showAlert(t('You must be logged in to submit a review'), 'error');
       return;
@@ -233,12 +233,12 @@ const CreateBookReviewPage = () => {
       </div>
 
       <YabrFooter />
-
-      <Modal show={showCreateReviewModal} size="lg" onClose={onCloseModal} popup>
+      
+      <Modal show={showCreateReviewModal} size="lg" onClose={onCloseCreateReviewModal} popup>
         <Modal.Header />
         <Modal.Body>
           <div className="space-y-6">
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Create your book review:</h3>
+            <h3 id="title-create-review" className="text-xl font-medium text-gray-900 dark:text-white">Create your book review:</h3>
 
             <div>
               <label className="block mb-2">{t('Rating')}</label>
@@ -246,9 +246,10 @@ const CreateBookReviewPage = () => {
               <div className="flex items-center space-x-4 p-0">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
+                  id={`create-btn-star-${star}`}
                   key={star}
                   type="button"
-                  onClick={() => setRating(star)}
+                  onClick={() => setReviewRating(star)}
                   className={`btn bg-transparent hover:bg-transparent hover:text-yellow-300 text-2xl ${rating >= star ? 'text-yellow-400' : 'text-gray-300'}`}
                 >
                   ★
@@ -259,17 +260,16 @@ const CreateBookReviewPage = () => {
 
             <div>
               <label className="block mb-2">{t('Your Review')}</label>
-              <ReactQuill value={content} onChange={setContent} />
+              <ReactQuill value={content} onChange={setReviewContent} />
             </div>
             
-            <div className="w-full">
-              <Button onClick={handleReviewSubmit}>Submit</Button>
+            <div className="w-full grid justify-items-end">
+              <Button id="btn-save-review" className='bg-blue-700' onClick={handleCreateReview}>Submit</Button>
             </div>
 
           </div>
         </Modal.Body>
       </Modal>
-      
     </div>
   );
 };

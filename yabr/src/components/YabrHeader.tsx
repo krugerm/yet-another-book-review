@@ -66,7 +66,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
           {loading || userContext.loading ? (
             <>
               <div className="hidden" id="user-loading"/>
-              <div id="user-profile-loading">Loading...</div>
+              <div id="user-profile-loading"></div>
             </>
           ) : !userProfile ? (
             <>

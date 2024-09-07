@@ -73,7 +73,7 @@ const HomePage = () => {
           
           <div className="flex justify-center">
             {/* <Button onClick={() => navigate('/register')} className="bg-pink-500 hover:bg-pink-600 text-white mx-6 py-2 px-12 rounded-full text-lg">JOIN THE YABR COMMUNITY</Button> */}
-            <Button onClick={() => navigate('/create-book-review')} className="bg-pink-500 hover:bg-pink-600 text-white mx-6 py-2 px-12 rounded-full text-lg">POST A REVIEW</Button>
+            <Button onClick={() => navigate('/create-book-review')} className="bg-pink-500 hover:bg-pink-600 text-white mx-6 py-2 px-12 rounded-full text-3xl">POST A REVIEW</Button>
           </div>
         </div>
       </section>

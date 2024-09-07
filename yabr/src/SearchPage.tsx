@@ -127,8 +127,8 @@ const SearchPage: React.FC = () => {
       <section className="px-4">
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-700">RESULTS</h2>
-            <p className="text-left" id="text-showing">Showing {(currentPage - 1) * pageSize + 1} to {Math.min(nResults, (currentPage) * pageSize)} of {nResults}</p>
+            <h2 className="hidden md:flex text-2xl font-bold text-gray-700">RESULTS</h2>
+            <p className="text-left hidden md:flex" id="text-showing">Showing {(currentPage - 1) * pageSize + 1} to {Math.min(nResults, (currentPage) * pageSize)} of {nResults}</p>
             {/* <a href="#" onClick={() => setSearchTerm('')} className="text-pink-500 hover:text-pink-600">VIEW ALL</a> */}
 
             {(Math.ceil(nResults / pageSize) > 1) && (

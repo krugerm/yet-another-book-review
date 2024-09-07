@@ -325,11 +325,11 @@ const BookDetailsPage: React.FC = () => {
               {reviews.length < 3 && (
                 <button onClick={() => handleAddAiGeneratedReviews(book)} className="mt-4 w-full bg-yellow-500 text-white py-2 rounded">
                   {aiLoading ? (
-                    <span className="flex items-center">
+                    <span className="flex justify-center">
                       <IoSparklesSharp className="animate-spin mx-2" /> Adding AI Reviews
                     </span>
                   ) : (
-                    <span className="flex items-center">
+                    <span className="flex justify-center">
                       <IoSparklesSharp className="mx-2" /> Add AI Generated Reviews
                     </span>
                   )}
