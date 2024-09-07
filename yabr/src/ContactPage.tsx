@@ -4,6 +4,7 @@ import { YabrHeader } from './components/YabrHeader';
 import { YabrFooter } from './components/YabrFooter';
 import { Button } from 'flowbite-react';
 import { useAlert } from './AlertContext';
+import { useNavigate } from 'react-router-dom';
 
 
 const ContactPage = () => {
@@ -14,6 +15,7 @@ const ContactPage = () => {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   // create a function to handle the form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -31,6 +33,7 @@ const ContactPage = () => {
       }
 
       showAlert("We'll be in touch shortly.", "success");
+      navigate('/');
       
     } catch (error) {
       showAlert("An error occurred. Please try again later.\n" + JSON.stringify(error), "error");
