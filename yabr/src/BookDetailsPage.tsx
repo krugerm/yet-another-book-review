@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { YabrHeader } from './components/YabrHeader';
 import { YabrFooter } from './components/YabrFooter';
-import { FaArrowLeft, FaRegStar, FaStar, FaStarHalf, FaFacebookF, FaTwitter, FaPinterest } from 'react-icons/fa';
+import { FaEdit, FaArrowLeft, FaRegStar, FaStar, FaStarHalf, FaFacebookF, FaTwitter, FaPinterest } from 'react-icons/fa';
 import { FiHeart, FiSearch } from 'react-icons/fi';
+import { RiDeleteBin2Fill } from "react-icons/ri";
 import { useNavigate, useParams } from 'react-router-dom';
 import {type IBook, IBookWithRatings} from './types/IBook';
 import {type IBookReviewWithProfile, type IBookReview} from './types/iBookReview';
@@ -12,12 +13,23 @@ import { useAlert } from './AlertContext';
 import { useUserContext } from './UserContext';
 import { addAiGeneratedReviews } from './utils/generateAiReviews';
 import { IoSparklesSharp } from "react-icons/io5";
+import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { useTranslation } from 'react-i18next';
+import { v4 as uuidv4 } from 'uuid';
 
 const BookDetailsPage: React.FC = () => {
   const { google_books_id } = useParams<{ google_books_id: string }>();
   const { showAlert } = useAlert();
+  const [showEditReviewModal, setShowEditReviewModal] = useState(false);
+  const [showCreateReviewModal, setShowCreateReviewModal] = useState(false);
+  
+  const [rating, setReviewRating] = useState(0);
+  const [content, setReviewContent] = useState('');
 
   const [book, setBook] = useState<IBook>();
+  const [selectedReview, setSelectedReview] = useState<IBookReview>();
   const [reviews, setReviews] = useState<IBookReviewWithProfile[]>([]);
   const [topRated, setTopRated] = useState<IBookWithRatings[]>([]);
   const [loading, setLoading] = useState(false);
@@ -26,6 +38,7 @@ const BookDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const userContext = useUserContext();
   const { userProfile } = userContext!;
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchBook();
@@ -82,19 +95,19 @@ const BookDetailsPage: React.FC = () => {
   }
 
   const buildStars = (rating: number): JSX.Element[] => {
-      const stars: JSX.Element[] = [];
-      
-      for (let i = 1; i <= 5; i++) {
-        if (i <= rating) {
-          stars.push(<FaStar key={i} className="text-yellow-400" />);
-        } else if (i - rating <= 0.5) {
-          stars.push(<FaStarHalf key={i} className="text-yellow-400" />);
-        } else {
-          stars.push(<FaStar key={i} className="text-gray-300" />);
-        }
+    const stars: JSX.Element[] = [];
+    
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars.push(<FaStar key={i} className="text-yellow-400" />);
+      } else if (i - rating <= 0.5) {
+        stars.push(<FaStarHalf key={i} className="text-yellow-400" />);
+      } else {
+        stars.push(<FaStar key={i} className="text-gray-300" />);
       }
-      return stars;
-    };
+    }
+    return stars;
+  };
 
   const handleAddAiGeneratedReviews = async (book: IBook) => {
     try {
@@ -109,6 +122,134 @@ const BookDetailsPage: React.FC = () => {
       setAiLoading(false);
     }
   }
+
+  const handleEditButtonClick = (review: IBookReviewWithProfile) => {
+    setSelectedReview(review);
+    setReviewRating(review.rating);
+    setReviewContent(review.review_text);
+    setShowEditReviewModal(true);
+  }
+
+  function onCloseCreateReviewModal() {
+    setShowCreateReviewModal(false);
+    setReviewRating(0);
+    setReviewContent('');
+  }
+
+  function onCloseEditReviewModal() {
+    setShowEditReviewModal(false);
+    setReviewRating(0);
+    setReviewContent('');
+  }
+
+  const handleCreateReview = async () => {
+    if (!userContext?.loading && !userProfile) {
+      showAlert(t('You must be logged in to create a review'), 'error');
+      return;
+    }
+
+    try {
+
+      const reviewData: IBookReview = {
+        id: uuidv4(),
+        rating: rating,
+        review_text: content,
+        user_id: userProfile!.id,
+        google_books_id: book?.google_books_id!,
+        created_at: new Date().toISOString(),
+      };
+
+      // showAlert("About to insert reviewData: " + JSON.stringify(reviewData), 'info');
+
+      const { data, error } = await supabase
+        .from('reviews')
+        .insert(reviewData)
+        .select()
+        .single();
+
+      if (error) {
+        showAlert(t('Error creating review'), 'error');
+        return null;
+      }
+
+      showAlert(t('Review created!'), 'success');
+      setShowCreateReviewModal(false);
+      fetchReviews();
+
+    } catch (error) {
+      // console.error('Error updating review:', error);
+      showAlert(t('An error occurred while creating your review. Please try again.'), 'error');
+    }
+  };
+
+  const handleUpdateReview = async () => {
+    if (!userContext?.loading && !userProfile) {
+      showAlert(t('You must be logged in to update a review'), 'error');
+      return;
+    }
+    if (!selectedReview) {
+      showAlert(t('You must select a review to update'), 'error');
+      return;
+    }
+
+    try {
+      selectedReview.rating = rating;
+      selectedReview.review_text = content;
+
+      // console.log('Updating review:', selectedReview);
+
+      const { data, error } = await supabase
+        .from('reviews')
+        .update({rating: rating, review_text: content})
+        .eq('id', selectedReview.id);
+
+      if (error) {
+        showAlert(t('Error updating review'), 'error');
+        return null;
+      }
+
+      showAlert(t('Review updated!'), 'success');
+      setShowEditReviewModal(false);
+      fetchReviews();
+
+    } catch (error) {
+      // console.error('Error updating review:', error);
+      showAlert(t('An error occurred while updating your review. Please try again.'), 'error');
+    }
+  };
+
+  const handleDeleteReview = async () => {
+    if (!userContext?.loading && !userProfile) {
+      showAlert(t('You must be logged in to delete a review'), 'error');
+      return;
+    }
+    if (!selectedReview) {
+      showAlert(t('You must select a review to delete'), 'error');
+      return;
+    }
+
+    //TODO: show confirmation dialog
+
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .delete()
+        .eq('id', selectedReview.id);
+
+      if (error) {
+        showAlert(t('Error deleting review'), 'error');
+        return null;
+      }
+
+      showAlert(t('Review deleted.'), 'success');
+      setShowEditReviewModal(false);
+      fetchReviews();
+
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      showAlert(t('An error occurred while deleting your review. Please try again.'), 'error');
+    }
+  };
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
@@ -178,7 +319,7 @@ const BookDetailsPage: React.FC = () => {
               )} */}
 
               {!hasUserReviewed && (
-                <button onClick={() => navigate('/create-book-review/' + book.google_books_id)} className="mt-4 w-full bg-red-500 text-white py-2 rounded">Create your own review</button>
+                <button onClick={() => setShowCreateReviewModal(true)} className="mt-4 w-full bg-red-500 text-white py-2 rounded">Create your own review</button>
               )}
 
               {reviews.length < 3 && (
@@ -276,6 +417,15 @@ const BookDetailsPage: React.FC = () => {
                         <img src={review.avatar_url ?? '/src/assets/placeholder1.png'} alt={review?.full_name} className="w-12 h-12 rounded-full object-cover" />
                         <div className="mx-4 font-bold">{review.full_name} rated it </div>
                         {buildStars(review.rating)}
+
+                        {userProfile && userProfile.id === review.user_id && (
+                          <div className="ml-auto text-gray-600 text-right">
+                            <button onClick={() => handleEditButtonClick(review)} className="flex text-blue-700 p-2 rounded outline">
+                              <FaEdit size={24} className="mr-2" />
+                              Edit
+                            </button>
+                          </div>
+                        )}
                       </div>
 
                       <p className="text-left text-wrap mt-2" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(review.review_text) }}></p>
@@ -289,6 +439,79 @@ const BookDetailsPage: React.FC = () => {
         </div>
       )}
 
+
+      <Modal show={showCreateReviewModal} size="lg" onClose={onCloseCreateReviewModal} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="space-y-6">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Create your book review:</h3>
+
+            <div>
+              <label className="block mb-2">{t('Rating')}</label>
+
+              <div className="flex items-center space-x-4 p-0">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setReviewRating(star)}
+                  className={`btn bg-transparent hover:bg-transparent hover:text-yellow-300 text-2xl ${rating >= star ? 'text-yellow-400' : 'text-gray-300'}`}
+                >
+                  ★
+                </button>
+              ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block mb-2">{t('Your Review')}</label>
+              <ReactQuill value={content} onChange={setReviewContent} />
+            </div>
+            
+            <div className="w-full grid justify-items-end">
+              <Button className='bg-blue-700' onClick={handleCreateReview}>Submit</Button>
+            </div>
+
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showEditReviewModal} size="lg" onClose={onCloseEditReviewModal} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="space-y-6">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Edit your book review:</h3>
+
+            <div>
+              <label className="block mb-2">{t('Rating')}</label>
+
+              <div className="flex items-center space-x-4 p-0">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setReviewRating(star)}
+                  className={`btn bg-transparent hover:bg-transparent hover:text-yellow-300 text-2xl ${rating >= star ? 'text-yellow-400' : 'text-gray-300'}`}
+                >
+                  ★
+                </button>
+              ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block mb-2">{t('Your Review')}</label>
+              <ReactQuill value={content} onChange={setReviewContent} />
+            </div>
+            
+            <div className="w-full flex justify-between">
+              <Button className='bg-red-700 text-white' onClick={handleDeleteReview}>Delete</Button>
+              <Button className='bg-blue-700' onClick={handleUpdateReview}>Submit</Button>
+            </div>
+
+          </div>
+        </Modal.Body>
+      </Modal>
 
       <YabrFooter />
     </div>
