@@ -80,6 +80,10 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
             </div>
           )} */}
 
+          <Button className="btn bg-blue-700 mx-4" onClick={() => navigate("/create-book-review")}>
+            Create a review
+          </Button>
+
           {loading ? (
             <div>Loading...</div>
           ) : !userProfile ? (

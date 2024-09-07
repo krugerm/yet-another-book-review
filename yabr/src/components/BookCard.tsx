@@ -24,7 +24,7 @@ export function BookCard({ book }: { book: IBookWithRatings }) {
   return (
     <div className="max-w-sm bg-gray-100 p-4" onClick={() => navigate('/book/' + book.google_books_id)}>
       <img 
-        src={book.thumbnail || '/src/assets/placeholder1.png'} 
+        src={(book.thumbnail ? (book.thumbnail + "&fife=w800") : "/src/assets/placeholder1.png")}
         alt={book.title} 
         className="w-32 h-48 object-cover mx-auto" // Updated size and centering
       />

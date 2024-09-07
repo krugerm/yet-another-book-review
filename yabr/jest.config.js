@@ -1,6 +1,5 @@
 module.exports = {
+  preset: 'jest-puppeteer',
   testEnvironment: 'node',
-  transform: {
-    '^.+\\.jsx?$': 'babel-jest',
-  },
+  setupFilesAfterEnv: ['expect-puppeteer'],
 };

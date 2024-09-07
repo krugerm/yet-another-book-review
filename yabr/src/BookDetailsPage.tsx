@@ -163,7 +163,7 @@ const BookDetailsPage: React.FC = () => {
           <main className="container mx-auto px-4 py-8 flex">
             {/* Left Column */}
             <div className="w-1/3 pr-8">
-              <img src={book.thumbnail ?? "/src/assets/placeholder1.png"} alt={book.title} className="w-full shadow-lg" />
+              <img src={(book.thumbnail ? (book.thumbnail + "&fife=w800") : "/src/assets/placeholder1.png")} alt={book.title} className="w-full shadow-lg" />
               
               {book.info_link && (
                 <button onClick={() => window.open(book.info_link!)} className="mt-4 w-full bg-blue-500 text-white py-2 rounded">Buy this book</button>

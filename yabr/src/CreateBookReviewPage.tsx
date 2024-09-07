@@ -7,10 +7,9 @@ import { YabrHeader } from './components/YabrHeader';
 import { YabrFooter } from './components/YabrFooter';
 
 import { BookSearch } from './components/BookSearch';
-import { ReviewForm } from './components/ReviewForm';
-import { GuidedTour } from './components/GuidedTour';
-import { ProgressSteps } from './components/ProgressSteps';
 import { HiDocumentText, HiHome, HiSave, HiSearch, HiUpload } from 'react-icons/hi';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 import { useUserContext } from './UserContext';
 import { useTranslation } from 'react-i18next';
@@ -18,9 +17,15 @@ import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { useAlert } from './AlertContext';
 
+import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
+
 
 const CreateBookReviewPage = () => {
   const { google_books_id } = useParams<{ google_books_id?: string }>();
+
+  const [showCreateReviewModal, setShowCreateReviewModal] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [content, setContent] = useState('');
   
   const [nResults, setNResults] = useState(0);
   const [searchResults, setSearchResults] = useState<IBookWithRatings[]>([]);
@@ -28,10 +33,9 @@ const CreateBookReviewPage = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(12);
   const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
 
   const [selectedBook, setSelectedBook] = useState<IBookWithRatings | null>(null);
-  const [showTour, setShowTour] = useState(false);
+  
   const userContext = useUserContext();
   const { userProfile } = userContext!;
   const navigate = useNavigate();
@@ -47,7 +51,7 @@ const CreateBookReviewPage = () => {
 
     if (google_books_id) {
       fetchBook(google_books_id);
-      setCurrentStep(1);
+      setShowCreateReviewModal(true);
     }
   }, [userProfile, google_books_id]);
 
@@ -63,6 +67,8 @@ const CreateBookReviewPage = () => {
 
       // console.log("fetchBook", book);
 
+      setSearchResults([book]);
+      setNResults(1);
       setSelectedBook(book);
     }
     catch (error) {
@@ -122,10 +128,16 @@ const CreateBookReviewPage = () => {
 
   const handleBookSelect = (book) => {
     setSelectedBook(book);
-    setCurrentStep(book == null ? 0 : 1);
+    setShowCreateReviewModal(true);
   };
 
-  const handleReviewSubmit = async (rating: number, content: string) => {
+  function onCloseModal() {
+    setShowCreateReviewModal(false);
+    setRating(0);
+    setContent('');
+  }
+
+  const handleReviewSubmit = async () => {
     if (!userProfile) {
       showAlert(t('You must be logged in to submit a review'), 'error');
       return;
@@ -151,9 +163,9 @@ const CreateBookReviewPage = () => {
         // console.log("inserting book: ", selectedBook);
         
         const { data, error } = await supabase
-          .from<IBook>('books')
+          .from('books')
           .insert(selectedBook)
-          .select()
+          .select<'*', IBook>()
           .single();
                 
         // console.log("inserted book", data);
@@ -206,27 +218,6 @@ const CreateBookReviewPage = () => {
     }
   };
 
-  const handleStepClick = (stepId) => {
-    console.log("handleStepClick", stepId, currentStep);
-    switch (stepId) {
-      case 0:
-        setSelectedBook(null);
-        setCurrentStep(stepId);
-        break;
-      case 1:
-        setCurrentStep(stepId);
-        break;
-      case 2:
-        break;
-    }
-  };
-
-  const steps = [
-    { id: 0, title: t('Search for a Book'), icon: <HiSearch size={20} /> },
-    { id: 1, title: t('Write a Review'), icon: <HiDocumentText size={20} /> },
-    { id: 2, title: t('Submit'), icon: <HiUpload size={20} /> },
-  ];
-
   return (
     <div className="bg-white dark:bg-gray-900 shadow-md">
 
@@ -235,19 +226,61 @@ const CreateBookReviewPage = () => {
       <div className="container mx-auto p-6 min-h-96">
         <h1 className="text-3xl font-bold mb-4">{t('Create a Book Review')}</h1>
 
-        <ProgressSteps steps={steps} currentStep={currentStep} onClick={handleStepClick} />
+        <BookSearch onSelectBook={handleBookSelect} />
 
-        <div className="m-y-12 my-12"></div>
-
-        {showTour && <GuidedTour onClose={() => setShowTour(false)} />}
-        {!selectedBook ? (
-          <BookSearch onSelectBook={handleBookSelect} />
-        ) : (
-          <ReviewForm book={selectedBook} onSubmit={handleReviewSubmit} />
-        )}
       </div>
 
       <YabrFooter />
+
+      <Modal show={showCreateReviewModal} size="lg" onClose={onCloseModal} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="space-y-6">
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Create your book review:</h3>
+
+            <div>
+              <label className="block mb-2">{t('Rating')}</label>
+
+              <div className="flex items-center space-x-4 p-0">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  className={`btn bg-transparent hover:bg-transparent hover:text-yellow-300 text-2xl ${rating >= star ? 'text-yellow-400' : 'text-gray-300'}`}
+                >
+                  ★
+                </button>
+              ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block mb-2">{t('Your Review')}</label>
+              <ReactQuill value={content} onChange={setContent} />
+            </div>
+            
+            {/* <div>
+              <div className="mb-2 block">
+                <Label htmlFor="email" value="Your email" />
+              </div>
+              <TextInput
+                id="email"
+                placeholder="name@company.com"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
+            </div> */}
+            
+            <div className="w-full">
+              <Button onClick={handleReviewSubmit}>Submit</Button>
+            </div>
+
+          </div>
+        </Modal.Body>
+      </Modal>
+      
     </div>
   );
 };
