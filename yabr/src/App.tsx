@@ -17,11 +17,15 @@ import TermsAndConditionsPage from "./TermsAndConditionsPage";
 import { UserProvider } from "./UserContext";
 import CreateBookReviewPage from "./CreateBookReviewPage";
 import { AlertProvider } from './AlertContext';
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from "@vercel/analytics/react"
 
 const App: React.FC = () => {
   return (
     <AlertProvider>
       <UserProvider>
+        <SpeedInsights />
+        <Analytics />
         <Router>
           <Routes>
             <Route path="/" element={<HomePage />} />
