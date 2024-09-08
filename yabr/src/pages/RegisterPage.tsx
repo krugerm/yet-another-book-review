@@ -6,6 +6,7 @@ import { useUserContext } from '../contexts/UserContext';
 import { useAlert } from '../contexts/AlertContext';
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import { AiOutlineLoading } from "react-icons/ai";
 
 
 const RegisterPage = () => {
@@ -16,6 +17,7 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
+  const [fullName, setFullname] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [validationMessage, setValidationMessage] = useState('');
@@ -75,14 +77,21 @@ const RegisterPage = () => {
     setError(null);
 
     try {
-      showAlert("Signing you up...", 'info');
-
-      const { data, error } = await supabase.auth.signUp({email: email, password: password});
+      const { data, error } = await supabase.auth.signUp({
+        email: email, 
+        password: password, 
+        options: {
+          data: {
+            full_name: fullName,
+          },
+        }
+      });
+      
       if (error) {
         throw error;
       }
 
-      showAlert("Please check your email to confirm your email address.", "success");
+      showAlert("Signed up!  Please check your email to confirm your email address.", "success");
       
       navigate('/login');
     } catch (error) {
@@ -125,6 +134,26 @@ const RegisterPage = () => {
                     placeholder="name@company.com"
                   />
                 </div>
+                
+                <div>
+                  <label
+                    htmlFor="fullName"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Your name
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    id="fullName"
+                    value={fullName}
+                    onChange={(e) => setFullname(e.target.value)}
+                    required
+                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Your name"
+                  />
+                </div>
+
                 <div>
                   <label
                     htmlFor="password"
@@ -165,24 +194,6 @@ const RegisterPage = () => {
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  {/* <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                      <input
-                        id="remember"
-                        aria-describedby="remember"
-                        type="checkbox"
-                        className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <label
-                        htmlFor="remember"
-                        className="text-gray-500 dark:text-gray-300"
-                      >
-                        Remember me
-                      </label>
-                    </div>
-                  </div> */}
                   <a
                     onClick={() => navigate('/forgotPassword')}
                     href="#"
@@ -195,12 +206,16 @@ const RegisterPage = () => {
                 {validationMessage && (
                   <p className="text-red-500 text-sm">{validationMessage}</p>
                 )}
+
                 <Button
                   type="submit"
+                  disabled={loading}
                   className="bg-blue-700 hover:bg-blue-900 w-full text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
-                  Sign Up
+                  {loading && <AiOutlineLoading className="animate-spin mr-2 h-5 w-5" />}
+                  {loading ? 'Signing up...' : 'Sign up'}
                 </Button>
+
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{" "}
                   <a
