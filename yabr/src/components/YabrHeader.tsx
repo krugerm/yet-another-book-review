@@ -33,8 +33,10 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
 
   const handleLogout = async () => {
     try {
+      var user = await supabase.auth.getUser();
+      // console.log('Logging out user ' + JSON.stringify(user));
       await supabase.auth.signOut();
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       console.error('Error logging out:', error.message);
     }
@@ -100,8 +102,8 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
                   {userProfile.username ?? "unknown"}
                   </span> */}
                 </Dropdown.Header>
-                <Dropdown.Item onClick={() => handleGenerateAiReviewsForAllBooks()}>Generate AI Reviews</Dropdown.Item>
-                <Dropdown.Divider />
+                {/* <Dropdown.Item onClick={() => handleGenerateAiReviewsForAllBooks()}>Generate AI Reviews</Dropdown.Item> */}
+                {/* <Dropdown.Divider /> */}
                 <Dropdown.Item id="btn-logout" onClick={handleLogout}>Sign out</Dropdown.Item>
               </Dropdown>
             </>

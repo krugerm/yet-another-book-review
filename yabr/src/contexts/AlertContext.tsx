@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle, HiCheck, HiQuestionMarkCircle } from "react-icons/hi";
+import { FaInfoCircle } from "react-icons/fa";
 
 // Define the types of alerts
 type AlertType = 'error' | 'warning' | 'info' | 'success';
@@ -52,6 +53,7 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           <div className="text-center">
 
             {alertType === 'success' ? <HiCheck className={`mx-auto mb-4 h-14 w-14 ${getAlertStyles(alertType)}`} /> 
+            : alertType === 'info' ? <FaInfoCircle className={`mx-auto mb-4 h-14 w-14 ${getAlertStyles(alertType)}`} /> 
             : alertType === 'error' ? <HiOutlineExclamationCircle className={`mx-auto mb-4 h-14 w-14 ${getAlertStyles(alertType)}`} /> 
             : alertType === 'warning' ? <HiOutlineExclamationCircle className={`mx-auto mb-4 h-14 w-14 ${getAlertStyles(alertType)}`} /> 
             : <HiQuestionMarkCircle className={`mx-auto mb-4 h-14 w-14 ${getAlertStyles(alertType)}`} />}

@@ -39,7 +39,7 @@ const CreateBookReviewPage = () => {
 
   useEffect(() => {
     if (!userContext?.loading && !userProfile) {
-      showAlert(t('You must be logged in to create a review'), 'error');
+      showAlert(t('You must be logged in to create a review'), 'info');
       navigate('/login?next=/create-book-review');
     } else {
       fetchBooks();
@@ -140,7 +140,7 @@ const CreateBookReviewPage = () => {
 
   const handleCreateReview = async () => {
     if (!userContext?.loading && !userProfile) {
-      showAlert(t('You must be logged in to submit a review'), 'error');
+      showAlert(t('You must be logged in to submit a review'), 'info');
       return;
     }
     if (!selectedBook) {

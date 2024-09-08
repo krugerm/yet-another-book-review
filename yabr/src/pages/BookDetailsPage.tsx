@@ -148,7 +148,7 @@ const BookDetailsPage: React.FC = () => {
 
   const handleCreateReview = async () => {
     if (!userContext?.loading && !userProfile) {
-      showAlert(t('You must be logged in to create a review'), 'error');
+      showAlert(t('You must be logged in to create a review'), 'info');
       return;
     }
 
@@ -188,11 +188,11 @@ const BookDetailsPage: React.FC = () => {
 
   const handleUpdateReview = async () => {
     if (!userContext?.loading && !userProfile) {
-      showAlert(t('You must be logged in to update a review'), 'error');
+      showAlert(t('You must be logged in to update a review'), 'info');
       return;
     }
     if (!selectedReview) {
-      showAlert(t('You must select a review to update'), 'error');
+      showAlert(t('You must select a review to update'), 'info');
       return;
     }
 
@@ -224,11 +224,11 @@ const BookDetailsPage: React.FC = () => {
 
   const handleDeleteReview = async () => {
     if (!userContext?.loading && !userProfile) {
-      showAlert(t('You must be logged in to delete a review'), 'error');
+      showAlert(t('You must be logged in to delete a review'), 'info');
       return;
     }
     if (!selectedReview) {
-      showAlert(t('You must select a review to delete'), 'error');
+      showAlert(t('You must select a review to delete'), 'info');
       return;
     }
 
