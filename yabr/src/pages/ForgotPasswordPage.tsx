@@ -1,37 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { YabrHeader } from "../components/YabrHeader";
 import { YabrFooter } from "../components/YabrFooter";
 import { Button } from "flowbite-react";
-import { useUserContext } from '../contexts/UserContext';
-import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { useAlert } from '../contexts/AlertContext';
+import { AiOutlineLoading } from "react-icons/ai";
 
 
 const ForgotPasswordPage = () => {
-  const navigate = useNavigate();
-  const userContext = useUserContext();
   const { showAlert } = useAlert();
 
   const [email, setEmail] = useState('');
   const [sending, setSending] = useState(false);
-  
-  useEffect(() => {
-    if (userContext?.userProfile) {
-      navigate('/');
-      return;
-    }
-  }, [userContext]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setSending(true);
-      // const hostname = window.location.hostname;
-      // await supabase.auth.resetPasswordForEmail(email, { redirectTo: `https://${hostname}/resetPassword` });
-      await supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://yet-another-book-review.vercel.app/resetPassword' });
-      console.log('Password reset email sent with redirect to: https://yet-another-book-review.vercel.app/resetPassword');
-      showAlert('We sent you a password reset email!  Please check your inbox.', 'success');
+
+      const hostname = window.location.hostname;
+      const port = window.location.port;
+
+      await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.protocol}//${hostname}:${port}/resetPassword` });
+
+      console.log(`Password reset email sent with redirect to: ${window.location.protocol}//${hostname}:${port}/resetPassword}`);
+
+      showAlert("We sent you a password reset email!  Please check your inbox.", 'success');
+
     } catch (error) {
       showAlert("Could not send password reset email: " + (error.error_description || error.message || JSON.stringify(error)), 'error');
     }
@@ -69,7 +64,7 @@ const ForgotPasswordPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@yarb.com"
+                  placeholder="name@yabr.com"
                   required
                 />
               </div>
@@ -86,6 +81,7 @@ const ForgotPasswordPage = () => {
                 onClick={(e) => {handleSubmit(e)}}
                 className="bg-blue-700 w-full text-white hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
+                {sending && <AiOutlineLoading className="animate-spin mr-2 h-5 w-5" />}
                 {sending ? 'Sending...' : 'Send reset password email'}
               </Button>
             </form>

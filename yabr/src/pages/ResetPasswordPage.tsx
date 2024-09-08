@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { YabrHeader } from "../components/YabrHeader";
 import { YabrFooter } from "../components/YabrFooter";
 import { Button } from "flowbite-react";
-import { useUserContext } from '../contexts/UserContext';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { useAlert } from '../contexts/AlertContext';
+import { Session } from "@supabase/supabase-js";
+import { AiOutlineLoading } from "react-icons/ai";
 
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
-  const userContext = useUserContext();
   const { showAlert } = useAlert();
 
   const [loading, setLoading] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
@@ -21,13 +22,19 @@ const ResetPasswordPage = () => {
   const [passwordComplexityMessage, setPasswordComplexityMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
   
+  const [session, setSession] = useState<Session | null>(null);
+
   useEffect(() => {
-    // This page should be accessible only to authenticated users.
-    if (userContext?.loading && !userContext?.userProfile) {
-      navigate('/');
-      return;
-    }
-  }, [userContext]);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    })
+
+    const {data: { subscription }} = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    })
+
+    return () => subscription.unsubscribe();
+  }, [])
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
@@ -70,13 +77,13 @@ const ResetPasswordPage = () => {
       return;
     }
 
-    setLoading(true);
-    setError(null);
 
     try {
-      showAlert("Resetting your password...", 'info');
+      setLoading(true);
+      setError(null);
 
       await supabase.auth.updateUser({ password: password });
+      showAlert("Your password has been reset.", 'success');
 
       navigate('/login');
     } 
@@ -128,7 +135,7 @@ const ResetPasswordPage = () => {
                   Confirm password
                 </label>
                 <input
-                  type="confirm-password"
+                  type="password"
                   name="confirm-password"
                   id="confirm-password"
                   value={password2}
@@ -145,9 +152,11 @@ const ResetPasswordPage = () => {
               <Button
                 onClick={(e) => {handleSubmit(e)}}
                 type="submit"
+                disabled={loading}
                 className="bg-blue-700 w-full text-white hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
-                Reset passwod
+                {loading && <AiOutlineLoading className="animate-spin mr-2 h-5 w-5" />}
+                {loading ? 'Resetting password...' : 'Reset password'}                
               </Button>
             </form>
           </div>
