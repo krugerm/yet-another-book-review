@@ -14,6 +14,7 @@ const ForgotPasswordPage = () => {
   const { showAlert } = useAlert();
 
   const [email, setEmail] = useState('');
+  const [sending, setSending] = useState(false);
   
   useEffect(() => {
     if (userContext?.userProfile) {
@@ -25,6 +26,7 @@ const ForgotPasswordPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setSending(true);
       // const hostname = window.location.hostname;
       // await supabase.auth.resetPasswordForEmail(email, { redirectTo: `https://${hostname}/resetPassword` });
       await supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://yet-another-book-review.vercel.app/resetPassword' });
@@ -32,6 +34,9 @@ const ForgotPasswordPage = () => {
       showAlert('We sent you a password reset email!  Please check your inbox.', 'success');
     } catch (error) {
       showAlert("Could not send password reset email: " + (error.error_description || error.message || JSON.stringify(error)), 'error');
+    }
+    finally {
+      setSending(false);
     }
   };
 
@@ -77,10 +82,11 @@ const ForgotPasswordPage = () => {
 
               <Button
                 type="submit"
+                disabled={sending}
                 onClick={(e) => {handleSubmit(e)}}
                 className="bg-blue-700 w-full text-white hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                Reset password
+                {sending ? 'Sending...' : 'Send reset password email'}
               </Button>
             </form>
           </div>
