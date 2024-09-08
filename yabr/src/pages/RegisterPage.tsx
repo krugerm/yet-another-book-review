@@ -19,6 +19,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [validationMessage, setValidationMessage] = useState('');
+  const [passwordComplexityMessage, setPasswordComplexityMessage] = useState('');
 
   const { next } = useParams();
 
@@ -29,6 +30,11 @@ const RegisterPage = () => {
     }
   }, [userContext]);
 
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    validatePasswordComplexity(e.target.value);
+  };
+
   const validatePasswords = () => {
     if (password !== password2) {
       setValidationMessage('Passwords do not match');
@@ -37,10 +43,31 @@ const RegisterPage = () => {
     setValidationMessage('');
     return true;
   };
+  
+  const validatePasswordComplexity = (password) => {
+    const complexityCriteria = [
+      { regex: /.{8,}/, message: 'Password must be at least 8 characters long' },
+      { regex: /[A-Z]/, message: 'Password must contain at least one uppercase letter' },
+      { regex: /[a-z]/, message: 'Password must contain at least one lowercase letter' },
+      { regex: /[0-9]/, message: 'Password must contain at least one number' },
+      { regex: /[^A-Za-z0-9]/, message: 'Password must contain at least one special character' },
+    ];
+  
+    for (const criterion of complexityCriteria) {
+      if (!criterion.regex.test(password)) {
+        setPasswordComplexityMessage(criterion.message);
+        return false;
+      }
+    }
+  
+    setPasswordComplexityMessage('');
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!validatePasswords()) {
+
+    if (!validatePasswords() || !validatePasswordComplexity(password)) {
       return;
     }
 
@@ -110,11 +137,14 @@ const RegisterPage = () => {
                     name="password"
                     id="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                     placeholder="••••••••"
                     required
                     className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   />
+                  {passwordComplexityMessage && (
+                    <p className="text-red-500 text-sm">{passwordComplexityMessage}</p>
+                  )}
                 </div>
                 <div>
                   <label
