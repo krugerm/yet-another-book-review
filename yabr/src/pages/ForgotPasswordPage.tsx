@@ -24,11 +24,12 @@ const ForgotPasswordPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Sending password reset email to:', email);
     try {
-      const hostname = window.location.hostname;
-      await supabase.auth.resetPasswordForEmail(email, { redirectTo: `https://${hostname}/resetPassword` });
-      // await supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://yet-another-book-review.vercel.app/resetPassword' });
+      // const hostname = window.location.hostname;
+      // await supabase.auth.resetPasswordForEmail(email, { redirectTo: `https://${hostname}/resetPassword` });
+      await supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://yet-another-book-review.vercel.app/resetPassword' });
+      console.log('Password reset email sent with redirect to: https://yet-another-book-review.vercel.app/resetPassword');
+      showAlert('We sent you a password reset email!  Please check your inbox.', 'success');
     } catch (error) {
       showAlert("Could not send password reset email: " + (error.error_description || error.message || JSON.stringify(error)), 'error');
     }
