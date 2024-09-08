@@ -21,9 +21,15 @@ const ForgotPasswordPage = () => {
       const hostname = window.location.hostname;
       const port = window.location.port;
 
-      await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.protocol}//${hostname}:${port}/resetPassword` });
+      var url = window.location.protocol + '//' + hostname;
+      if (port && port.length > 0) {
+        url += `:${port}`;
+      }
+      url += '/resetPassword';
 
-      console.log(`Password reset email sent with redirect to: ${window.location.protocol}//${hostname}:${port}/resetPassword}`);
+      await supabase.auth.resetPasswordForEmail(email, { redirectTo: url });
+
+      console.log(`Password reset email sent with redirect to: ${url}`);
 
       showAlert("We sent you a password reset email!  Please check your inbox.", 'success');
 
