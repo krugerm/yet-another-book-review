@@ -14,7 +14,7 @@ import { useUserContext } from '../contexts/UserContext';
 import type { IUserProfile } from '../types/iUserProfile';
 import { supabase } from "../supabaseClient";
 import { useTranslation } from "react-i18next";
-import { addAiGeneratedReviewsForAllBooks } from "../utils/generateAiReviews";
+import { createAiReviewsForAllBooks } from "../utils/generateAiReviews";
 
 export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: boolean}> = ({ initSearchTerm, showSearchBar}) => {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ export const YabrHeader: React.FC<{initSearchTerm?: string, showSearchBar?: bool
   };
 
   const handleGenerateAiReviewsForAllBooks = async () => {
-    await addAiGeneratedReviewsForAllBooks();
+    await createAiReviewsForAllBooks();
   };
 
   return (

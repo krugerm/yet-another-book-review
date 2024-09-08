@@ -10,7 +10,7 @@ import { supabase } from '../supabaseClient';
 import DOMPurify from 'dompurify';
 import { useAlert } from '../contexts/AlertContext';
 import { useUserContext } from '../contexts/UserContext';
-import { addAiGeneratedReviews } from '../utils/generateAiReviews';
+import { generateAiReviewsAndSaveToSupabase } from '../utils/generateAiReviews';
 import { IoSparklesSharp } from "react-icons/io5";
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import ReactQuill from 'react-quill';
@@ -116,7 +116,7 @@ const BookDetailsPage: React.FC = () => {
   const handleAddAiGeneratedReviews = async (book: IBook) => {
     try {
       setAiLoading(true);
-      await addAiGeneratedReviews(book);
+      await generateAiReviewsAndSaveToSupabase(book);
       await fetchReviews();
     }
     catch (error) {

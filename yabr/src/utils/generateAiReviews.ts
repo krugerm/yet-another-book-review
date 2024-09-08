@@ -8,16 +8,16 @@ const openai = new OpenAI({
     dangerouslyAllowBrowser: true
 });
 
-const reviewers = [
-    'Michiko Kakutani',
-    'Ron Charles',
-    'Parul Sehgal',
-    'James Wood',
-    'Margaret Atwood',
-    'Maureen Corrigan',
-    'Dwight Garner',
-    'John Freeman'
-];
+// const reviewers = [
+//     'Michiko Kakutani',
+//     'Ron Charles',
+//     'Parul Sehgal',
+//     'James Wood',
+//     'Margaret Atwood',
+//     'Maureen Corrigan',
+//     'Dwight Garner',
+//     'John Freeman'
+// ];
 
 interface IGeneratedReview {
     reviewer: string;
@@ -25,11 +25,11 @@ interface IGeneratedReview {
     rating: number;
 }
 
-async function generateFamousReviews(book: IBook) {
+async function generateAiReviews(book: IBook, reviewerNames: string[]): Promise<IGeneratedReview[]> {
     const reviews: IGeneratedReview[] = [];
 
     // for (const reviewer of reviewers.sort(() => Math.random() - 0.5)) {
-    const reviewPromises = reviewers.sort(() => Math.random() - 0.5).map(async (reviewer) => {
+    const reviewPromises = reviewerNames.sort(() => Math.random() - 0.5).map(async (reviewer) => {
         try {
             const prompt = `Returning your results in JSON only, give a rating out of 5 and write a book review for "${book.title}" by ${book.authors?.join(',')} in the style of ${reviewer}. The review should be between 20 and 150 words long and reflect ${reviewer}'s typical tone and focus. Here's a brief synopsis of the book: ${book.description}
             Your response should be in the following JSON format:
@@ -45,7 +45,7 @@ async function generateFamousReviews(book: IBook) {
                 temperature: 0.7,
             });
 
-            var result = response.choices[0].message.content.trim();
+            var result = response?.choices[0]?.message?.content?.trim() ?? '';
             if (result.startsWith('```json')) {
                 result = result.substring(7);
             }
@@ -69,10 +69,10 @@ async function generateFamousReviews(book: IBook) {
     return reviews;
 }
 
-async function addAiGeneratedReviews(bookData: IBook) {
+async function generateAiReviewsAndSaveToSupabase(bookData: IBook) {
     // First, add the book to your Supabase table if it's not already there
     const { data: book, error: bookError } = await supabase
-        .from<IBook>('books')
+        .from('books')
         .upsert(bookData)
         .select<'*', IBook>()
         .single();
@@ -98,9 +98,11 @@ async function addAiGeneratedReviews(bookData: IBook) {
         reviewerNamesToIds[reviewerProfiles[i].full_name] = reviewerProfiles[i].id;
     }
     // console.log('reviewerNamesToIds: ' + JSON.stringify(reviewerNamesToIds));
+    // get the list of reviewer names
+    const reviewerNames = Object.keys(reviewerNamesToIds);
 
     // Generate reviews
-    const generatedReviews = await generateFamousReviews(book);
+    const generatedReviews = await generateAiReviews(book, reviewerNames);
 
     // Add generated reviews to your Supabase table
     const insertData = generatedReviews.map(review => ({
@@ -122,7 +124,7 @@ async function addAiGeneratedReviews(bookData: IBook) {
     return { book, reviews };
 }
 
-async function addAiGeneratedReviewsForAllBooks() {
+async function createAiReviewsForAllBooks() {
     const { data: booksWithRatings, error: booksError } = await supabase
         .from('books_with_ratings')
         .select<'*', IBookWithRatings>('*')
@@ -190,9 +192,9 @@ async function addAiGeneratedReviewsForAllBooks() {
                 access_view_status: bookWithRatings.access_view_status,
                 quote_sharing_allowed: bookWithRatings.quote_sharing_allowed,
             };
-            await addAiGeneratedReviews(book);
+            await generateAiReviewsAndSaveToSupabase(book);
         }
     }
 }
 
-export { addAiGeneratedReviews, generateFamousReviews, addAiGeneratedReviewsForAllBooks };
+export { generateAiReviewsAndSaveToSupabase, generateAiReviews, createAiReviewsForAllBooks };
