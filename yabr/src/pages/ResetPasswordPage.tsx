@@ -2,12 +2,92 @@ import React, { useState, useEffect } from "react";
 import { YabrHeader } from "../components/YabrHeader";
 import { YabrFooter } from "../components/YabrFooter";
 import { Button } from "flowbite-react";
-import { useNavigate } from 'react-router-dom';
+import { useUserContext } from '../contexts/UserContext';
+import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "../supabaseClient";
+import { useAlert } from '../contexts/AlertContext';
 
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
+  const userContext = useUserContext();
+  const { showAlert } = useAlert();
+
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
+  const [validationMessage, setValidationMessage] = useState('');
+  const [passwordComplexityMessage, setPasswordComplexityMessage] = useState('');
+  const [error, setError] = useState<string | null>(null);
   
+  useEffect(() => {
+    // This page should be accessible only to authenticated users.
+    if (userContext?.loading && !userContext?.userProfile) {
+      navigate('/');
+      return;
+    }
+  }, [userContext]);
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    validatePasswordComplexity(e.target.value);
+  };
+
+  const validatePasswords = () => {
+    if (password !== password2) {
+      setValidationMessage('Passwords do not match');
+      return false;
+    }
+    setValidationMessage('');
+    return true;
+  };
+  
+  const validatePasswordComplexity = (password) => {
+    const complexityCriteria = [
+      { regex: /.{8,}/, message: 'Password must be at least 8 characters long' },
+      { regex: /[A-Z]/, message: 'Password must contain at least one uppercase letter' },
+      { regex: /[a-z]/, message: 'Password must contain at least one lowercase letter' },
+      { regex: /[0-9]/, message: 'Password must contain at least one number' },
+      { regex: /[^A-Za-z0-9]/, message: 'Password must contain at least one special character' },
+    ];
+  
+    for (const criterion of complexityCriteria) {
+      if (!criterion.regex.test(password)) {
+        setPasswordComplexityMessage(criterion.message);
+        return false;
+      }
+    }
+  
+    setPasswordComplexityMessage('');
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validatePasswords() || !validatePasswordComplexity(password)) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      showAlert("Resetting your password...", 'info');
+
+      await supabase.auth.updateUser({ password: password });
+
+      navigate('/login');
+    } 
+    catch (error) {
+      showAlert("Could not reset your password: " + (error.error_description || error.message || JSON.stringify(error)), 'error');
+    }
+    finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-gray-900">
       <YabrHeader />
@@ -21,22 +101,6 @@ const ResetPasswordPage = () => {
             <form className="mt-4 space-y-4 lg:mt-5 md:space-y-5" action="#">
               <div>
                 <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Your email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
-                  required
-                />
-              </div>
-              <div>
-                <label
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
@@ -46,10 +110,15 @@ const ResetPasswordPage = () => {
                   type="password"
                   name="password"
                   id="password"
-                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => handlePasswordChange(e)}
+                  placeholder=""
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
+                {passwordComplexityMessage && (
+                  <p className="text-red-500 text-sm">{passwordComplexityMessage}</p>
+                )}
               </div>
               <div>
                 <label
@@ -62,39 +131,19 @@ const ResetPasswordPage = () => {
                   type="confirm-password"
                   name="confirm-password"
                   id="confirm-password"
-                  placeholder="••••••••"
+                  value={password2}
+                  onChange={(e) => setPassword2(e.target.value)}
+                  placeholder=""
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
               </div>
-              <div className="flex items-start">
-                <div className="flex items-center h-5">
-                  <input
-                    id="newsletter"
-                    aria-describedby="newsletter"
-                    type="checkbox"
-                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                    required
-                  />
-                </div>
-                <div className="ml-3 text-sm">
-                  <label
-                    htmlFor="newsletter"
-                    className="font-light text-gray-500 dark:text-gray-300"
-                  >
-                    I accept the{" "}
-                    <a
-                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                      onClick={() => navigate('/terms')}
-                      href="#"
-                      target="_blank"
-                    >
-                      Terms and Conditions
-                    </a>
-                  </label>
-                </div>
-              </div>
+
+              {validationMessage && (
+                  <p className="text-red-500 text-sm">{validationMessage}</p>
+                )}
               <Button
+                onClick={(e) => {handleSubmit(e)}}
                 type="submit"
                 className="bg-blue-700 w-full text-white hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
