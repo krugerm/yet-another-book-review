@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import { expect, assert, should } from 'chai';
+import { expect } from 'chai';
 
 describe('User Authentication E2E Tests', () => {
   let browser;
@@ -8,12 +8,12 @@ describe('User Authentication E2E Tests', () => {
   const testUsername = "mikekruger78+test1@gmail.com";
   const testPassword = "Intrepid1!";
 
-  before(async () => {
+  beforeAll(async () => {
     browser = await puppeteer.launch({ headless: false, slowMo: 50 });
     page = await browser.newPage();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await browser.close();
   });
 

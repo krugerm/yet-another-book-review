@@ -151,29 +151,23 @@ These assumptions and limitations represent areas where the project could potent
 
 ## 6. Project Structure
 
+- `/public`: Static assets
 - `/src`: Source code
   - `/components`: React components
   - `/pages`: Pages
   - `/contexts`: React contexts
   - `/utils`: Utility functions
   - `/types`: TypeScript type definitions
+- `/supabase`: Supabase project linked environment - migrations / seed
+- `/tests`: Automated tests
 
 ## 7. Testing
 
-We use Puppeteer for end-to-end testing. To run the tests:
-
-1. Ensure the application is running on `http://localhost:3000` (replacing 3000 with your actual port)
-2. Run the tests:
+We use Jest + Puppeteer for end-to-end testing. To run the tests:
 
 ```bash
-npx mocha tests/e2e/*.test*.js --timeout 30000
+npm run test
 ```
-
-Key test files:
-
-- `tests/e2e/userAuthentication.e2e.tests.js`
-- `tests/e2e/bookReviewSearch.e2e.tests.js`
-- `tests/e2e/bookReviewOperations.e2e.tests.js`
 
 ## 8. Contributing
 

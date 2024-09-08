@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import { expect, assert, should } from 'chai';
+import { expect } from 'chai';
 
 describe('Review Operations E2E Tests', () => {
   let browser;
@@ -8,7 +8,7 @@ describe('Review Operations E2E Tests', () => {
   const testUsername = "mikekruger78+test1@gmail.com";
   const testPassword = "Intrepid1!";
 
-  before(async () => {
+  beforeAll(async () => {
     browser = await puppeteer.launch({ headless: false, slowMo: 50 });
     page = await browser.newPage();
 
@@ -25,13 +25,13 @@ describe('Review Operations E2E Tests', () => {
     expect(loggedInElement).to.not.be.null;
   });
 
-  after(async () => {
+  afterAll(async () => {
     await browser.close();
   });
 
   beforeEach(async () => {
     // Navigate to a specific book details page
-    await page.goto('http://localhost:5173/book/Iy2dAgAAQBAJ');
+    await page.goto('http://localhost:5173/book/kYK-CQAAQBAJ');
     await page.waitForSelector('.container');
   });
 
@@ -95,7 +95,6 @@ describe('Review Operations E2E Tests', () => {
     const reviewText = await page.$eval('.rounded.shadow p', el => el.textContent);
     expect(reviewText).to.include('This is a test review for the book');
   });
-
 
   it('should update an existing review', async () => {
     // Click the edit button on the first review

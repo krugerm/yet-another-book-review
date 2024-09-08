@@ -5,12 +5,12 @@ describe('Book Review Search E2E Tests', () => {
   let browser;
   let page;
 
-  before(async () => {
+  beforeAll(async () => {
     browser = await puppeteer.launch({ headless: false, slowMo: 50 });
     page = await browser.newPage();
   });
 
-  after(async () => {
+  afterAll(async () => {
     await browser.close();
   });
 
