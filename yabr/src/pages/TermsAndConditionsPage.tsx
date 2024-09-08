@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { YabrHeader } from "./components/YabrHeader";
-import { YabrFooter } from "./components/YabrFooter";
+import { YabrHeader } from "../components/YabrHeader";
+import { YabrFooter } from "../components/YabrFooter";
+
 
 const TermsAndConditionsPage = () => {
   return (

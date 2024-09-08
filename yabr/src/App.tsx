@@ -1,22 +1,22 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./HomePage";
-import SearchPage from "./SearchPage";
-import AboutPage from "./AboutPage";
-import ContactPage from "./ContactPage";
-import PrivacyPage from "./PrivacyPage";
-import AccountPage from "./AccountPage";
-import BookDetailsPage from "./BookDetailsPage";
-import LoginPage from "./LoginPage";
-import AuthPage from "./AuthPage";
-import RegisterPage from "./RegisterPage";
-import ResetPasswordPage from "./ResetPasswordPage";
-import ForgotPasswordPage from "./ForgotPasswordPage";
-import TermsAndConditionsPage from "./TermsAndConditionsPage";
-import { UserProvider } from "./UserContext";
-import CreateBookReviewPage from "./CreateBookReviewPage";
-import { AlertProvider } from './AlertContext';
+import HomePage from "./pages/HomePage";
+import SearchPage from "./pages/SearchPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import AccountPage from "./pages/AccountPage";
+import BookDetailsPage from "./pages/BookDetailsPage";
+import LoginPage from "./pages/LoginPage";
+import AuthPage from "./pages/AuthPage";
+import RegisterPage from "./pages/RegisterPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import TermsAndConditionsPage from "./pages/TermsAndConditionsPage";
+import { UserProvider } from "./contexts/UserContext";
+import CreateBookReviewPage from "./pages/CreateBookReviewPage";
+import { AlertProvider } from './contexts/AlertContext';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from "@vercel/analytics/react"
 

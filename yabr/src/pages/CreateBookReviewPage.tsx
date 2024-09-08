@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { supabase } from './supabaseClient';
-import { type IBook, type IBookWithRatings } from "./types/IBook";
-import { type IBookReview } from "./types/iBookReview";
-import { YabrHeader } from './components/YabrHeader';
-import { YabrFooter } from './components/YabrFooter';
-
-import { BookSearch } from './components/BookSearch';
-import { HiDocumentText, HiHome, HiSave, HiSearch, HiUpload } from 'react-icons/hi';
+import { supabase } from '../supabaseClient';
+import { type IBook, type IBookWithRatings } from "../types/IBook";
+import { type IBookReview } from "../types/iBookReview";
+import { YabrHeader } from '../components/YabrHeader';
+import { YabrFooter } from '../components/YabrFooter';
+import { BookSearch } from '../components/BookSearch';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
-import { useUserContext } from './UserContext';
-import { useTranslation } from 'react-i18next';
-
 import { v4 as uuidv4 } from 'uuid';
-import { useAlert } from './AlertContext';
-
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
-import { Pagination } from "flowbite-react";
+import { useTranslation } from 'react-i18next';
+import { useUserContext } from '../contexts/UserContext';
+import { useAlert } from '../contexts/AlertContext';
 
 
 const CreateBookReviewPage = () => {
@@ -62,16 +56,21 @@ const CreateBookReviewPage = () => {
       setLoading(true);
 
       const { data: book } = await supabase
-        .from<IBookWithRatings>('books_with_ratings')
-        .select('*')
+        .from('books_with_ratings')
+        .select<'*', IBookWithRatings>('*')
         .eq('google_books_id', google_books_id)
         .single();
 
       // console.log("fetchBook", book);
-
-      setSearchResults([book]);
-      setNResults(1);
-      setSelectedBook(book);
+      if (book == null) {
+        setSearchResults([]);
+        setNResults(0);
+      }
+      else {
+        setSearchResults([book]);
+        setNResults(1);
+        setSelectedBook(book);
+      }
     }
     catch (error) {
       showAlert('Error fetching book details', 'error');
@@ -87,8 +86,8 @@ const CreateBookReviewPage = () => {
       setLoading(true);
       
       var query = supabase
-        .from<IBookWithRatings>('books_with_ratings')
-        .select('*', { count: 'exact' });
+        .from('books_with_ratings')
+        .select<'*', IBookWithRatings>('*', { count: 'exact' });
 
       if (google_books_id != null) {
         query = query.eq('google_books_id', google_books_id);

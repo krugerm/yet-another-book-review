@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { YabrHeader } from './components/YabrHeader';
-import { YabrFooter } from './components/YabrFooter';
+import { YabrHeader } from '../components/YabrHeader';
+import { YabrFooter } from '../components/YabrFooter';
 
 
 const AboutPage = () => {
-
   return (
     <div className="bg-white dark:bg-gray-900 shadow-md">
       <YabrHeader />

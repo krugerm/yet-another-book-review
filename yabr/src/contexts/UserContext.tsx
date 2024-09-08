@@ -1,8 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { supabase } from './supabaseClient';
+import { supabase } from '../supabaseClient';
 import { Session, User } from '@supabase/supabase-js';
-import type { IUserProfile } from './types/iUserProfile';
-import type { Database } from './types/supabase';
+import type { IUserProfile } from '../types/iUserProfile';
+import type { Database } from '../types/supabase';
 
 
 export interface UserContextType {
@@ -60,8 +60,8 @@ export function UserProvider({ children }) {
       const { user } = session2;
 
       const { data: profile, error } = await supabase
-        .from<IUserProfile>("profiles")
-        .select('*')
+        .from("profiles")
+        .select<'*', IUserProfile>('*')
         .eq("id", user.id)
         .single();
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { YabrHeader } from "./components/YabrHeader";
-import { YabrFooter } from "./components/YabrFooter";
+import { YabrHeader } from "../components/YabrHeader";
+import { YabrFooter } from "../components/YabrFooter";
 import { useNavigate, useParams } from "react-router-dom";
+
 
 const PrivacyPage = () => {
   const navigate = useNavigate();

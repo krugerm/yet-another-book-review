@@ -1,33 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { supabase } from './supabaseClient';
-import type { IBookWithRatings } from "./types/IBook";
-import { BookCard } from './components/BookCard';
-import { YabrHeader } from './components/YabrHeader';
-import { YabrFooter } from './components/YabrFooter';
+import { supabase } from '../supabaseClient';
+import type { IBookWithRatings } from "../types/IBook";
+import { BookCard } from '../components/BookCard';
+import { YabrHeader } from '../components/YabrHeader';
+import { YabrFooter } from '../components/YabrFooter';
 import { useParams } from 'react-router-dom';
-import {
-  Navbar,
-  NavbarBrand,
-  TextInput,
-  Avatar,
-  Dropdown,
-  Button,
-} from "flowbite-react";
-import { HiSearch, HiUserCircle, HiOutlineXCircle } from "react-icons/hi";
+import { TextInput } from "flowbite-react";
+import { HiSearch } from "react-icons/hi";
 import { useTranslation } from "react-i18next";
 import { Pagination } from "flowbite-react";
+import { useAlert } from '../contexts/AlertContext';
 
-
-// Debounce function
-const debounce = (func: Function, delay: number) => {
-  let timeoutId: NodeJS.Timeout;
-  return (...args: any[]) => {
-    if (timeoutId) clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      func(...args);
-    }, delay);
-  };
-};
 
 const SearchPage: React.FC = () => {
   const { initSearchTerm } = useParams<{ initSearchTerm?: string }>();
@@ -39,6 +22,7 @@ const SearchPage: React.FC = () => {
   const [pageSize, setPageSize] = useState(12);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     fetchBooks();
@@ -54,8 +38,8 @@ const SearchPage: React.FC = () => {
       
       var results;
       if (s && s.length > 0) {
-        results = await supabase.from<IBookWithRatings>('books_with_ratings')
-          .select('*', { count: 'exact' })
+        results = await supabase.from('books_with_ratings')
+          .select<'*', IBookWithRatings>('*', { count: 'exact' })
           .textSearch('combined_text', s, {
             type: 'websearch',
             config: 'english'
@@ -65,8 +49,8 @@ const SearchPage: React.FC = () => {
       }
       else {
         results = await supabase
-          .from<IBookWithRatings>('books_with_ratings')
-          .select('*', { count: 'exact' })
+          .from('books_with_ratings')
+          .select<'*', IBookWithRatings>('*', { count: 'exact' })
           .order('last_reviewed', { ascending: false })
           .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
       }
@@ -74,14 +58,13 @@ const SearchPage: React.FC = () => {
       const { data, error, count } = results;
 
       if (results == null) {
-        console.log("No books found in the database");
         setSearchResults([]);
         setNResults(0);
       }
       else if (error) {
-        console.log("No books found in the database: " + error);
         setSearchResults([]);
         setNResults(0);
+        throw error;
       }
       else{
         setSearchResults(data);
@@ -90,7 +73,7 @@ const SearchPage: React.FC = () => {
         
     }
     catch (err) {
-      console.error("Error fetching books", err);
+      showAlert('Error fetching books', 'error');
     }
     finally {
       setLoading(false);

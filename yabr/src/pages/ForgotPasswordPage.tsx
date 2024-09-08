@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { YabrHeader } from "./components/YabrHeader";
-import { YabrFooter } from "./components/YabrFooter";
+import { YabrHeader } from "../components/YabrHeader";
+import { YabrFooter } from "../components/YabrFooter";
 import { Button } from "flowbite-react";
-import { useUserContext } from './UserContext';
+import { useUserContext } from '../contexts/UserContext';
 import { useNavigate, useParams } from "react-router-dom";
+
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();

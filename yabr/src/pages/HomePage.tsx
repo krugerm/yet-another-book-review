@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from './supabaseClient';
+import { supabase } from '../supabaseClient';
 import { Button, Carousel } from 'flowbite-react';
-import type { IBook, IBookWithRatings } from "./types/IBook";
-import { importBookFromGoogleAPI } from './utils/importBookFromGoogleAPI';
-import { BookCard } from './components/BookCard';
-import { YabrHeader } from './components/YabrHeader';
-import { YabrFooter } from './components/YabrFooter';
+import type { IBook, IBookWithRatings } from "../types/IBook";
+import { BookCard } from '../components/BookCard';
+import { YabrHeader } from '../components/YabrHeader';
+import { YabrFooter } from '../components/YabrFooter';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -24,30 +23,18 @@ const HomePage = () => {
       setLoading(true);
 
       const { data: topRated } = await supabase
-        .from<IBookWithRatings>('books_with_ratings')
-        .select('*')
-        //.order('average_rating', { ascending: false })
+        .from('books_with_ratings')
+        .select<'*', IBookWithRatings>('*')
         .order('last_reviewed', { ascending: false })
         .limit(5);
-      setTopRatedBooks(topRated);
+      setTopRatedBooks(topRated ?? []);
 
       const { data: allBooks } = await supabase
-        .from<IBookWithRatings>('books_with_ratings')
-        .select('*')
-        // .neq('thumbnail', null)
+        .from('books_with_ratings')
+        .select<'*', IBookWithRatings>('*')
         .order('last_reviewed', { ascending: false })
-        //.order('created_at', { ascending: false })
-        // .order('title', { ascending: false })
         .limit(12);
-
-      console.log('Fetched books:', allBooks);
-
-      if (allBooks == null) {
-        console.log("No books found in the database");
-        return;
-      }
-
-      setRecentBooks(allBooks);
+      setRecentBooks(allBooks ?? []);
     }
     catch (error) {
       console.error('Error fetching books:', error);
@@ -98,7 +85,7 @@ const HomePage = () => {
           }
 
           {
-            !loading && recentBooks.length === 0 && (
+            !loading && recentBooks?.length === 0 && (
               <div className="text-center mb-6">
                 <h3 className="text-lg font-bold">No books found</h3>
                 <p>Check back later for more books</p>
@@ -107,27 +94,17 @@ const HomePage = () => {
           }
 
           {
-            !loading && recentBooks.length > 0 && (
+            !loading && recentBooks?.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                {recentBooks.map((book) => (
+                {recentBooks?.map((book) => (
                   <BookCard key={book.google_books_id} book={book} />
                 ))}
               </div>
             )
           }
 
-
         </div>
       </section>
-
-      {/* Post Your Reviews */}
-      {/* <section className="py-12 bg-gray-700 text-center">
-        <div className="container mx-auto">
-          <h2 className="text-2xl text-white font-bold mb-4">Post Your Reviews</h2>
-          <p className="mb-6 text-white">Share your thoughts on the books you've read and help others discover great literature.</p>
-          <Button onClick={() => navigate('/create-book-review')} className="items-center bg-pink-500 hover:bg-pink-600 text-white py-2 px-6 rounded-full text-lg mx-auto">SUBMIT A REVIEW</Button>
-        </div>
-      </section> */}
 
       <YabrFooter />
     </div>

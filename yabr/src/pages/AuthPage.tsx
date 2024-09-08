@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { supabase } from "./supabaseClient";
+import { supabase } from "../supabaseClient";
 import React from "react";
-import { YabrHeader } from "./components/YabrHeader";
-import { YabrFooter } from "./components/YabrFooter";
-import { useAlert } from './AlertContext';
+import { YabrHeader } from "../components/YabrHeader";
+import { YabrFooter } from "../components/YabrFooter";
+import { useAlert } from '../contexts/AlertContext';
+
 
 export default function AuthPage() {
   const [loading, setLoading] = useState(false);

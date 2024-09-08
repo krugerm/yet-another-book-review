@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { YabrHeader } from './components/YabrHeader';
-import { YabrFooter } from './components/YabrFooter';
+import { YabrHeader } from '../components/YabrHeader';
+import { YabrFooter } from '../components/YabrFooter';
 import { FaEdit, FaArrowLeft, FaRegStar, FaStar, FaStarHalf, FaFacebookF, FaTwitter, FaPinterest } from 'react-icons/fa';
 import { FiHeart, FiSearch } from 'react-icons/fi';
-import { RiDeleteBin2Fill } from "react-icons/ri";
 import { useNavigate, useParams } from 'react-router-dom';
-import {type IBook, IBookWithRatings} from './types/IBook';
-import {type IBookReviewWithProfile, type IBookReview} from './types/iBookReview';
-import { supabase } from './supabaseClient';
+import {type IBook, IBookWithRatings} from '../types/IBook';
+import {type IBookReviewWithProfile, type IBookReview} from '../types/iBookReview';
+import { supabase } from '../supabaseClient';
 import DOMPurify from 'dompurify';
-import { useAlert } from './AlertContext';
-import { useUserContext } from './UserContext';
-import { addAiGeneratedReviews } from './utils/generateAiReviews';
+import { useAlert } from '../contexts/AlertContext';
+import { useUserContext } from '../contexts/UserContext';
+import { addAiGeneratedReviews } from '../utils/generateAiReviews';
 import { IoSparklesSharp } from "react-icons/io5";
 import { Button, Checkbox, Label, Modal, TextInput } from "flowbite-react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
+
 
 const BookDetailsPage: React.FC = () => {
   const { google_books_id } = useParams<{ google_books_id: string }>();
@@ -48,27 +48,31 @@ const BookDetailsPage: React.FC = () => {
     try {
       setLoading(true);
 
-      console.log('Fetching book details for google_books_id:', google_books_id);
+      // console.log('Fetching book details for google_books_id:', google_books_id);
 
       const { data: book } = await supabase
-        .from<IBook>('books')
-        .select('*')
+        .from('books')
+        .select<'*', IBook>('*')
         .eq('google_books_id', google_books_id)
         .single();
-      // showAlert('Loaded book: ' + book?.title, 'success');
+      
+      if (!book) {
+        showAlert('Book not found', 'error');
+        return;
+      }
+
       setBook(book);
 
       const { data: reviews } = await supabase
-        .from<IBookReviewWithProfile>('reviews_with_profiles')
-        .select('*')
+        .from('reviews_with_profiles')
+        .select<'*', IBookReviewWithProfile>('*')
         .eq('google_books_id', book.google_books_id)
         .order('created_at', { ascending: false });
-      // showAlert('Loaded reviews: ' + reviews?.length, 'success');
       setReviews(reviews ?? []);
 
       const { data: topRated } = await supabase
-        .from<IBookWithRatings>('books_with_ratings')
-        .select('*')
+        .from('books_with_ratings')
+        .select<'*', IBookWithRatings>('*')
         .order('average_rating', { ascending: false })
         .limit(5);
       setTopRated(topRated ?? []);
@@ -86,8 +90,8 @@ const BookDetailsPage: React.FC = () => {
     if (!book) return;
 
     const { data: reviews } = await supabase
-      .from<IBookReviewWithProfile>('reviews_with_profiles')
-      .select('*')
+      .from('reviews_with_profiles')
+      .select<'*', IBookReviewWithProfile>('*')
       .eq('google_books_id', book.google_books_id)
       .order('created_at', { ascending: false });
 

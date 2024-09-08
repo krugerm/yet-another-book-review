@@ -10,7 +10,7 @@ import {
 } from "flowbite-react";
 import { HiSearch, HiUserCircle } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
-import { useUserContext } from '../UserContext';
+import { useUserContext } from '../contexts/UserContext';
 import type { IUserProfile } from '../types/iUserProfile';
 import { supabase } from "../supabaseClient";
 import { useTranslation } from "react-i18next";

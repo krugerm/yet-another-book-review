@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { supabase } from "./supabaseClient";
-import { YabrHeader } from "./components/YabrHeader";
-import { YabrFooter } from "./components/YabrFooter";
+import { YabrHeader } from "../components/YabrHeader";
+import { YabrFooter } from "../components/YabrFooter";
 import { Button } from "flowbite-react";
 import { useNavigate } from 'react-router-dom';
+
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
