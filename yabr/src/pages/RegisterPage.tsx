@@ -18,6 +18,8 @@ const RegisterPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+  const [validationMessage, setValidationMessage] = useState('');
+
   const { next } = useParams();
 
   useEffect(() => {
@@ -26,14 +28,28 @@ const RegisterPage = () => {
       return;
     }
   }, [userContext]);
-  
+
+  const validatePasswords = () => {
+    if (password !== password2) {
+      setValidationMessage('Passwords do not match');
+      return false;
+    }
+    setValidationMessage('');
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validatePasswords()) {
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      alert("Signing up with email / password: " + JSON.stringify([email, password]));
+      showAlert("Signing you up...", 'info');
+
       const { data, error } = await supabase.auth.signUp({email: email, password: password});
       if (error) {
         throw error;
@@ -43,7 +59,8 @@ const RegisterPage = () => {
       
       navigate('/login');
     } catch (error) {
-      showAlert("An error occurred. Please try again later.\n" + JSON.stringify(error), "error");
+      //showAlert("An error occurred. Please try again later.\n" + JSON.stringify(error), "error");
+      showAlert("An error occurred. Please try again later.", "error");
       setError(error.message);
     } finally {
       setLoading(false);
@@ -144,6 +161,10 @@ const RegisterPage = () => {
                     Forgot password?
                   </a>
                 </div>
+
+                {validationMessage && (
+                  <p className="text-red-500 text-sm">{validationMessage}</p>
+                )}
                 <Button
                   type="submit"
                   className="bg-blue-700 hover:bg-blue-900 w-full text-white focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
